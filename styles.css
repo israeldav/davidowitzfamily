@@ -32,8 +32,12 @@ img {
 }
 
 #hi {
+  border-radius: 10px;
+  border-color: aqua;
+  padding: 5px;
+  width: 150px;
   align-items: center;
-  display: inline-block;
+  text-align: center;
 }
 nav {
   list-style-type: none;
