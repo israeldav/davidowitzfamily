@@ -7,7 +7,7 @@ body {
 ul {
   background-color: #ededed;
   padding: 30px;
-  font-family: 'Segoe UI';
+  font-style: Verdana;
   margin-bottom: 3px;
   font-size: 18;
 }
@@ -15,6 +15,7 @@ h1 {
   color: #333333;
   text-align: center;
   align-items: center;
+  font-style: Verdana;
 }
 p {
   color: #333333;
@@ -42,4 +43,5 @@ nav {
   text-decoration: none;
   display: inline-block;
   border-radius: 12px;
+  font-style: Verdana;
 }
