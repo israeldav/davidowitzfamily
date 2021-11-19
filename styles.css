@@ -1,13 +1,13 @@
 body {
   background-color: #ededed;
   padding: 30px;
-  font-style: Verdana;
+  font-family: 'Oxygen', sans-serif;
   font-size: 18px;
 }
 ul {
   background-color: #ededed;
   padding: 30px;
-  font-style: Verdana;
+  font-family: 'Oxygen', sans-serif;
   margin-bottom: 3px;
   font-size: 18;
 }
@@ -38,10 +38,9 @@ nav {
   background-color: lightgray;
   border: none;
   color: white;
-  padding: 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   border-radius: 12px;
-  font-style: Verdana;
+  font-family: 'Oxygen', sans-serif;
 }
