@@ -31,10 +31,10 @@ img {
   align-items: center;
 }
 
-#hi {
+.hii {
   border-radius: 10px;
   border-color: aqua;
-  padding: 55px;
+  padding: 5px;
   width: 150px;
   align-items: center;
   text-align: center;
