@@ -38,6 +38,7 @@ img {
   width: 150px;
   align-items: center;
   text-align: center;
+  float: right;
 }
 nav {
   list-style-type: none;
