@@ -8,6 +8,7 @@ ul {
   background-color: #ededed;
   padding: 30px;
   font-family: 'Segoe UI';
+  margin-bottom: 3px;
   font-size: 18;
 }
 h1 {
@@ -33,12 +34,12 @@ nav {
   font-size: 20px;
 }
 #buttons {
-  background-color: grey;
+  background-color: lightblue;
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 30px 64px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 45px;
 }
