@@ -35,23 +35,24 @@ nav {
   font-size: 20px;
 }
 #buttons {
-  background-colol: white;
-  border-bottom-color: rgb (26, 115, 232);
-  border-top-color: rgb (26, 115, 232);
-  border-right-color: rgb (26, 115, 232);
-  border-left-color: rgb (26, 115, 232);
+  background-color: white;
+  outline-color: rgb(26, 115, 232);
+  border-bottom-color: rgb(26, 115, 232);
+  border-top-color: rgb(26, 115, 232);
+  border-right-color: rgb(26, 115, 232);
+  border-left-color: rgb(26, 115, 232);
+  text-decoration-color: rgb(26, 115, 232);
+  text-decoration-style: solid;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   border-width: 1px;
+  color: rgb(26, 115, 232);
   border-style: solid;
   cursor: pointer;
-  border: none;
   padding: 10px;
-  color: white;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-family: 'Oxygen', sans-serif;
 }
