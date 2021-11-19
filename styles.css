@@ -37,9 +37,10 @@ nav {
   background-color: lightblue;
   border: none;
   color: white;
-  padding: 30px 64px;
+  padding: 30px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 45px;
+  border-radius: 12px;
 }
