@@ -34,10 +34,10 @@ nav {
   font-size: 20px;
 }
 #buttons {
-  background-color: lightblue;
+  background-color: lightgray;
   border: none;
   color: white;
-  padding: 30px;
+  padding: 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
