@@ -30,6 +30,11 @@ img {
   margin-bottom: 20px;
   align-items: center;
 }
+
+#hi {
+  align-items: center;
+  display: inline-block;
+}
 nav {
   list-style-type: none;
   margin: 0;
