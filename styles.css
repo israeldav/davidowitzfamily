@@ -34,11 +34,11 @@ img {
 .hii {
   border-radius: 10px;
   border-color: aqua;
-  padding: 5px;
+  padding: 30px;
   width: 150px;
-  align-items: center;
-  text-align: center;
-  float: right;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 nav {
   list-style-type: none;
