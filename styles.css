@@ -56,3 +56,8 @@ nav {
   text-decoration: none;
   font-family: 'Oxygen', sans-serif;
 }
+
+#link {
+  color: rgb(26, 115, 232);
+  text-decoration: none;
+}
