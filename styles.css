@@ -25,6 +25,10 @@ p {
 ol li {
   list-style-type: none;
 }
+
+.customIndent {
+  padding-left: 15em;
+}
 img {
   width: 45%;
   height: auto;
