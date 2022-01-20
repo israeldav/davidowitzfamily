@@ -20,9 +20,10 @@
     var family = new FamilyTree(document.getElementById('tree'), {
       nodeBinding: {
         field_0: 'name',
+        field_1: 'gender',
       },
       nodes: [
-        { id: 1, pids: [2], name: 'Mordechai Farkash' },
+        { id: 1, pids: [2], name: 'Mordechai Farkash', gender: 'Male' },
         { id: 2, pids: [1], name: 'Devorah Farkash' },
         { id: 4, pids: [27], mid: 2, fid: 1, name: 'Freda Herskowitz' },
         { id: 5, pids: [7], mid: 4, fid: 27, name: 'Sara Herskowitz (Bubby)' },
