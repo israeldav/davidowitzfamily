@@ -19,8 +19,10 @@
   <script>
     var family = new FamilyTree(document.getElementById('tree'), {
       nodeBinding: {
-        field_0: 'Name',
-        field_1: 'Gender',
+        field_0: 'name',
+        field_1: 'gender',
+        field_2: 'born',
+        field_3: 'died',
       },
       nodes: [
         { id: 1, pids: [2], name: 'Mordechai Farkash', gender: 'Male' },
