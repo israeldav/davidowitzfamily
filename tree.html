@@ -77,10 +77,19 @@
         { id: 23, fid: 20, name: 'Chaim Ahroni (Israel)' },
         { id: 24, mid: 5, fid: 7, name: 'Morris Davidowitz' },
         { id: 25, mid: 5, fid: 7, name: 'Tzvi Davidowitz' },
-        { id: 26, pids: [43], name: 'Moshe Davidowitz' },
+        {
+          id: 26,
+          pids: [43],
+          name: 'Moshe Davidowitz',
+          born: 'Oct 20, 1883',
+          married: 'Dec 31, 1907',
+          died: 'Oct 8, 1944',
+        },
         {
           id: 27,
           pids: [4],
+          fid: 49,
+          mid: 50,
           name: 'Efraim Herskowitz',
           born: 'Feb 23, 1889',
           married: 'Nov 11, 1915',
@@ -147,6 +156,7 @@
           pids: [26],
           name: 'Rivka (Regina) Davidowitz (Herskovics)',
           born: '1888',
+          married: 'Dec 31, 1907',
           died: 'Jan 29, 1920',
         },
         {
@@ -178,6 +188,14 @@
           fid: 27,
           name: 'Jingic (Chaim) Herskowitz',
           born: 'Jan 29, 1923',
+        },
+        {
+          id: 49,
+          name: 'Mayer Herskowitz',
+        },
+        {
+          id: 50,
+          name: 'F. Jakobovics',
         },
       ],
     });
