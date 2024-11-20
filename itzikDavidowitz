@@ -15,23 +15,28 @@
       <a id="link" href="./index.html">Home</a>
   </h1>
     <h1 style="text-align: center;">
-       Shmuel Lebovics
+        Itzik Davidowitz
     </h1>
  
         <br></br>
         <ul>
-            <li>b. 1930</li>
-            <li>Birth location:</li>
-          <li>Father: Chaim Ber</li>
-          <li>Mother: Pesel</li>
-          <li>Wife: Single</li>
-          <li>d. 1944 </li>
-          <li>Buried: Auschwitz</li>
+          <li>b. July 22, 1925 | Av 1, 5685</li>
+          <li>Father: <a href="moshe.html">Moshe</a></li>
+          <li>Mother: <a href="">Rivkah (Miriam)</a></li>
+          <li>d. </li>
+          <li>Buried: </li>
         </ul>
+        <br></br>
+        <br></br>
+    
 
-    <a href='https://collections.yadvashem.org/en/names/14776072' >
-      <embed title="yadvashem" src="img/shmuelDavidowitz3/shmuelDavidowitz3.pdf" width="50%" height="600"></a>
-    <br/>
+       
+        <br/><br/>
+        <a href='https://collections.arolsen-archives.org/en/search/?s=davidovits%20samuel' >
+          <embed title="yadvashem" src="" width="50%" height="700"></a>
+              <br/> 
+        <a>
+
 
   </body>
 </html>
