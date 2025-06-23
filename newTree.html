@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <title>Family Tree</title>
 
-  <!-- Treant & Raphael via jsDelivr CDN -->
+  <!-- Include jQuery FIRST -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Then Treant & Raphael -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.css">
   <script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.min.js"></script>
@@ -12,62 +15,68 @@
   <style>
     body {
       font-family: sans-serif;
-      text-align: center;
       margin: 0;
       padding: 0;
+      background: #f9f9f9;
     }
-    #tree {
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #tree-container {
       width: 100%;
-      height: 100%;
-      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding-top: 40px;
     }
+
+    #tree {
+      width: 90%;
+      height: 800px;
+      position: relative;
+    }
+
     .node {
       padding: 5px 10px;
-      border: 1px solid #aaa;
+      border: 1px solid #999;
       border-radius: 4px;
-      background-color: #fefefe;
+      background-color: white;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .Treant > .node {
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-<h2>Family Tree</h2>
-<div id="tree"></div>
+<h2>Davidowitz Family Tree</h2>
+<div id="tree-container">
+  <div id="tree"></div>
+</div>
 
 <script>
-  const familyTree = {
-    chart: {
-      container: "#tree",
-      node: { HTMLclass: "node" },
-      connectors: { type: "step" },
-      animateOnInit: true
-    },
-    nodeStructure: {
-      text: { name: "Mordechai & Devorah" },
-      children: [
-        { text: { name: "Sarah" } },
-        {
-          text: { name: "Bertha & Yosef" },
-          children: [
-            { text: { name: "Henrik" } }
-          ]
-        },
-        {
-          text: { name: "Frieda & Froim" },
-          children: [
-            { text: { name: "Sarah" } },
-            { text: { name: "Chaya" } },
-            { text: { name: "Izzy" } },
-            { text: { name: "Leah" } },
-            { text: { name: "Hersh Melech" } }
-          ]
-        }
-      ]
-    }
-  };
-
-  new Treant(familyTree);
-</script>
-
-</body>
-</html>
+  document.addEventListener("DOMContentLoaded", function () {
+    const familyTree = {
+      chart: {
+        container: "#tree",
+        node: { HTMLclass: "node" },
+        connectors: { type: "step" }
+      },
+      nodeStructure: {
+        innerHTML: '<a href="https://google.com" target="_blank">Mordechai</a> & <a href="https://google.com" target="_blank">Devorah</a>',
+        children: [
+          { text: { name: "Sarah" } },
+          {
+            text: { name: "Bertha & Yosef" },
+            children: [
+              { text: { name: "Henrik" } }
+            ]
+          },
+          {
+            text: { name: "Frieda & Froim" },
+            children: [
