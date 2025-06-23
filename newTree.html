@@ -35,40 +35,38 @@
 <div id="tree"></div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const familyTree = {
-      chart: {
-        container: "#tree",
-        node: { HTMLclass: "node" },
-        connectors: { type: "step" },
-        animateOnInit: true
-      },
-      nodeStructure: {
-        text: { name: "Mordechai & Devorah" },
-        children: [
-          { text: { name: "Sarah" } },
-          {
-            text: { name: "Bertha & Yosef" },
-            children: [
-              { text: { name: "Henrik" } }
-            ]
-          },
-          {
-            text: { name: "Frieda & Froim" },
-            children: [
-              { text: { name: "Sarah" } },
-              { text: { name: "Chaya" } },
-              { text: { name: "Izzy" } },
-              { text: { name: "Leah" } },
-              { text: { name: "Hersh Melech" } }
-            ]
-          }
-        ]
-      }
-    };
+  const familyTree = {
+    chart: {
+      container: "#tree",
+      node: { HTMLclass: "node" },
+      connectors: { type: "step" },
+      animateOnInit: true
+    },
+    nodeStructure: {
+      text: { name: "Mordechai & Devorah" },
+      children: [
+        { text: { name: "Sarah" } },
+        {
+          text: { name: "Bertha & Yosef" },
+          children: [
+            { text: { name: "Henrik" } }
+          ]
+        },
+        {
+          text: { name: "Frieda & Froim" },
+          children: [
+            { text: { name: "Sarah" } },
+            { text: { name: "Chaya" } },
+            { text: { name: "Izzy" } },
+            { text: { name: "Leah" } },
+            { text: { name: "Hersh Melech" } }
+          ]
+        }
+      ]
+    }
+  };
 
-    new Treant(familyTree);
-  });
+  new Treant(familyTree);
 </script>
 
 </body>
