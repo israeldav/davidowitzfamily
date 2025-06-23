@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Family Tree</title>
+  <title>Davidowitz Family Tree</title>
 
-  <!-- Include jQuery FIRST -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <!-- Then Treant & Raphael -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.css">
   <script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.min.js"></script>
@@ -22,20 +19,20 @@
 
     h2 {
       text-align: center;
-      margin-top: 20px;
+      margin: 10px 0;
     }
 
     #tree-container {
       width: 100%;
       display: flex;
       justify-content: center;
-      align-items: start;
-      padding-top: 40px;
+      align-items: flex-start;
+      padding-top: 10px;
     }
 
     #tree {
-      width: 90%;
-      height: 800px;
+      width: 95%;
+      height: 1200px;
       position: relative;
     }
 
@@ -68,23 +65,58 @@
         connectors: { type: "step" }
       },
       nodeStructure: {
-        innerHTML: '<a href="https://google.com" target="_blank">Mordechai</a> & <a href="https://google.com" target="_blank">Devorah</a>',
+        innerHTML: "Mordechai & Devorah",
         children: [
-          { text: { name: "Sarah" } },
           {
-            text: { name: "Bertha & Yosef" },
+            innerHTML: "Sarah",
             children: [
-              { text: { name: "Henrik" } }
+              {
+                innerHTML: "Rivkah Fleisher",
+                children: [
+                  { innerHTML: "Freida Riven" }
+                ]
+              }
             ]
           },
           {
-            text: { name: "Frieda & Froim" },
+            innerHTML: "Bertha & Yosef",
             children: [
-              { text: { name: "Sarah" } },
-              { text: { name: "Chaya" } },
-              { text: { name: "Izzy" } },
-              { text: { name: "Leah" } },
-              { text: { name: "Hersh Melech" } }
+              {
+                innerHTML: "Henrik",
+                children: [
+                  { innerHTML: "Benni" },
+                  { innerHTML: "Eve" }
+                ]
+              },
+              {
+                innerHTML: "Frieda",
+                children: [
+                  { innerHTML: "Chaim" }
+                ]
+              }
+            ]
+          },
+          {
+            innerHTML: "Freida & Froim",
+            children: [
+              {
+                innerHTML: "Sara",
+                children: [
+                  { innerHTML: "Fred" },
+                  { innerHTML: "Morris" },
+                  { innerHTML: "Tzvi" }
+                ]
+              },
+              {
+                innerHTML: "Chaya",
+                children: [
+                  { innerHTML: "Fred" }
+                ]
+              },
+              { innerHTML: "Izzy" },
+              { innerHTML: "Malka" },
+              { innerHTML: "Lea" },
+              { innerHTML: "Hersh Melech" }
             ]
           }
         ]
