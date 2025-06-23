@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Family Tree</title>
+  <link rel="stylesheet" href="https://fperucic.github.io/treant-js/Treant.css">
+  <style>
+    #tree {
+      width: 100%;
+      height: 100%;
+      margin-top: 40px;
+    }
+    .Treant {
+      overflow: auto;
+    }
+    .node {
+      padding: 5px 10px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background-color: #fefefe;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Family Tree</h2>
+<div id="tree"></div>
+
+<script src="https://fperucic.github.io/treant-js/vendor/raphael.js"></script>
+<script src="https://fperucic.github.io/treant-js/Treant.js"></script>
+<script>
+  const familyTree = {
+    chart: {
+      container: "#tree",
+      node: { HTMLclass: "node" },
+      connectors: { type: "step" },
+      animateOnInit: true
+    },
+    nodeStructure: {
+      text: { name: "Mordechai & Devorah" },
+      children: [
+        { text: { name: "Sarah" } },
+        {
+          text: { name: "Bertha & Yosef" },
+          children: [
+            { text: { name: "Henrik" } }
+          ]
+        },
+        {
+          text: { name: "Frieda & Froim" },
+          children: [
+            { text: { name: "Sarah" } },
+            { text: { name: "Chaya" } },
+            { text: { name: "Izzy" } },
+            { text: { name: "Leah" } },
+            { text: { name: "Hersh Melech" } }
+          ]
+        }
+      ]
+    }
+  };
+
+  new Treant(familyTree);
+</script>
+
+</body>
+</html>
