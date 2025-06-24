@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Davidowitz Family Tree</title>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.css">
+  <script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.min.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    #tree-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 10px;
+    }
+
+    #tree {
+      width: 95%;
+      height: 1200px;
+      position: relative;
+    }
+
+    .node {
+      padding: 5px 10px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .Treant > .node {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Davidowitz Family Tree</h2>
+<div id="tree-container">
+  <div id="tree"></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const familyTree = {
+      chart: {
+        container: "#tree",
+        node: { HTMLclass: "node" },
+        connectors: { type: "step" }
+      },
+      nodeStructure: {
+        innerHTML: 'Mechel & Tzipora',
+        children: [
+          { innerHTML: '<a href="./shlomoDavidowitz.html" target="_blank">Shlomo</a>' },
+          {
+            innerHTML: '<a href="./avrohamDavidowitz.html" target="_blank">Avroham</a>',
+            children: [
+              { innerHTML: 'Tziporah' },
+              { innerHTML: 'Micha' }
+            ]
+          },
+          {
+            innerHTML: 'Pesil',
+            children: [
+              { innerHTML: 'Shmuel' },
+              { innerHTML: 'Isaac' },
+              { innerHTML: 'Tziporah' },
+              { innerHTML: 'Chana Feiga' },
+              { innerHTML: 'Golda' },
+              { innerHTML: 'Michael' }
+            ]
+          },
+          {
+            innerHTML: '<a href="./etelDavidowitz.html" target="_blank">Etel</a> 🪦',
+            children: [
+              { innerHTML: 'Mechel' },
+              { innerHTML: 'Isaac' },
+              { innerHTML: 'Shmuel' },
+              { innerHTML: 'Avroham Yehuda' }
+            ]
+          },
+          {
+            innerHTML: 'Moshe & Rivkah (Regina)',
+            children: [
+              { innerHTML: 'Srul' },
+              { innerHTML: 'Daniel' },
+              { innerHTML: 'Shmuel' },
+              { innerHTML: 'Isaac' }
+            ]
+          },
+          {
+            innerHTML: 'Moshe & Miriam',
+            children: [
+              { innerHTML: 'Izzy' },
+              { innerHTML: '<a href="./ceilDavidowitz.html" target="_blank">Ceil</a>' }
+            ]
+          },
+          { innerHTML: 'Rivkah' },
+          { innerHTML: 'Miriam' }
+        ]
+      }
+    };
+
+    new Treant(familyTree);
+  });
+</script>
+
+</body>
+</html>
