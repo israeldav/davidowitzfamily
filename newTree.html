@@ -32,7 +32,7 @@
 
     #tree {
       width: 95%;
-      height: 1200px;
+      height: 1400px;
       position: relative;
     }
 
@@ -46,6 +46,11 @@
 
     .Treant > .node {
       white-space: nowrap;
+    }
+
+
+    .linked {
+      border: 2px solid #66ccff !important;
     }
   </style>
 </head>
@@ -65,103 +70,89 @@
         connectors: { type: "step" }
       },
       nodeStructure: {
-        innerHTML: "Mordechai & Devorah (Dora) nee Lebovics",
+        innerHTML: "x & x",
         children: [
           {
-            innerHTML: '<a href="./FaigaGoldinger.html" target="_blank">Feiga</a> 🪦 & <a href="./ShalomYosefGoldinger.html" target="_blank">Shalom Yosef Goldinger</a> 🪦',
+            innerHTML: "Mordechai & Devorah (Dora) nee Lebovics",
             children: [
               {
-                innerHTML: "Rivkah Fleisher",
+                innerHTML: '<a href="./FaigaGoldinger.html" target="_blank">Feiga</a> 🪦 & <a href="./ShalomYosefGoldinger.html" target="_blank">Shalom Yosef Goldinger</a> 🪦',
                 children: [
-                  { innerHTML: "Freida Riven 🇺🇸 " }
+                  {
+                    innerHTML: "Rivkah Fleisher",
+                    children: [
+                      { innerHTML: "Freida Riven 🇺🇸 " }
+                    ]
+                  },
+                  { innerHTML: "Tzvi Yechiel 🪦" },
+                  { innerHTML: "Ita 🪦" },
+                  { innerHTML: "Leah 🪦" },
+                  { innerHTML: '<a href="./mordechaiGoldinger.html" target="_blank">Mordechai</a> 🪦' }
                 ]
               },
               {
-                innerHTML: "Tzvi Yechiel 🪦",
+                innerHTML: '<a href="./breinaAroni.html" target="_blank">Breina (Bertha)</a> 🪦 & <a href="./yosefAroni.html" target="_blank">Yosef</a> 🪦 Aroni',
+                children: [
+                  {
+                    innerHTML: "Henrik (Yechezkel)",
+                    children: [
+                      { innerHTML: "Benni 🇦🇺" },
+                      { innerHTML: "Eve Fried 🇦🇺" }
+                    ]
+                  },
+                  {
+                    innerHTML: "Tzvi",
+                    children: [
+                      { innerHTML: "Chaim 🇮🇱" }
+                    ]
+                  },
+                  { innerHTML: "Mordechai" },
+                  { innerHTML: '<a href="./eliasAroni.html" target="_blank">Elias</a> 🪦' },
+                  { innerHTML: '<a target="_blank">Chaim Aryeh (Herman)</a> 🪦' },
+                  { innerHTML: '<a target="_blank">Malka (Margit)</a> 🪦' },
+                  { innerHTML: '<a href="./fredaAroni.html" target="_blank">Frieda</a> 🪦' }
+                ]
               },
-               {
-                innerHTML: "Ita 🪦",
+              {
+                innerHTML:  '<a href="./freidahershkowitz.html" target="_blank">Freida (Farkas)</a> 🪦 & <a href="./efraimhershkowitz.html" target="_blank">Froim</a> 🪦',
+                children: [
+                  {
+                    innerHTML: '<a href="./bubby.html" target="_blank">Sarah</a>',
+                    children: [
+                      { innerHTML: '<a href="./fredDavidowitz.html" target="_blank">Fred 🇺🇸</a>'},
+                      { innerHTML: '<a href="./morrisDavidowitz.html" target="_blank">Morris 🇺🇸</a>'},
+                      { innerHTML: "Tzvi 🇺🇸" }
+                    ]
+                  },
+                  {
+                    innerHTML: '<a href="./chayaHershkowitz.html" target="_blank">Chaya</a>',
+                    children: [
+                      { innerHTML: "Fred 🇺🇸" }
+                    ]
+                  },
+                  { innerHTML: '<a href="./malkaHershkowitz.html" target="_blank">Malka</a> 🪦' },
+                  { innerHTML: '<a href="./chaimHerskowitz.html" target="_blank">Chaim</a>' },
+                  { innerHTML: '<a href="./mordechaiHerskowitz.html" target="_blank">Mordechai (Marton)</a>' },
+                  { innerHTML: '<a href="./irvingHerskowitz.html" target="_blank">Irving</a>' },
+                  { innerHTML: '<a href="./leahhershkowitz.html" target="_blank">Leah</a> 🪦'},
+                  { innerHTML: '<a href="./hershmeilichhershkowitz.html" target="_blank">Hersh Meilich</a> 🪦'},
+                  { innerHTML: '<a href="./yechezkelhershkowitz.html" target="_blank">Yechezkel</a>'}   
+                ]
               },
-               {
-                innerHTML: "Leah 🪦",
-              },
-               {
-                innerHTML: '<a href="./mordechaiGoldinger.html" target="_blank">Mordechai</a> 🪦'
+              {
+                innerHTML:  '<a href="./saraFarkas.html" target="_blank">Sarah 🪦</a>',
               }
-              
             ]
           },
           {
-            innerHTML: '<a href="./breinaAroni.html" target="_blank">Breina (Bertha)</a> 🪦 & <a href="./yosefAroni.html" target="_blank">Yosef</a> 🪦 Aroni',
+            innerHTML: 'x & x',
+            HTMLclass: 'linked',
             children: [
               {
-                innerHTML: "Henrik (Yechezkel)",
-                children: [
-                  { innerHTML: "Benni 🇦🇺" },
-                  { innerHTML: "Eve Fried 🇦🇺" }
-                ]
-              },
-              {
-                innerHTML: "Tzvi",
-                children: [
-                  { innerHTML: "Chaim 🇮🇱" }
-                ]
-              },
-               {
-                innerHTML: "Mordechai",
-                
-              },
-              {
-                innerHTML: '<a href="./eliasAroni.html" target="_blank">Elias</a> 🪦'
-              },
-              {
-                innerHTML: '<a target="_blank">Chaim Aryeh (Herman)</a> 🪦'
-              },
-                {
-                innerHTML: '<a target="_blank">Malka (Margit)</a> 🪦'
-              },
-              {
-                innerHTML: '<a href="./fredaAroni.html" target="_blank">Frieda</a> 🪦'
-                
+                innerHTML: '<a href="./efraimhershkowitz.html" target="_blank">Froim</a> 🪦 <br><small>duplicate</small>'
               }
             ]
-          },
-          {
-            innerHTML:  '<a href="./freidahershkowitz.html" target="_blank">Freida (Farkas)</a> 🪦 & <a href="./efraimhershkowitz.html" target="_blank">Froim</a> 🪦',
-            children: [
-              {
-                innerHTML: '<a href="./bubby.html" target="_blank">Sarah</a>',
-                children: [
-                  { innerHTML: '<a href="./fredDavidowitz.html" target="_blank">Fred 🇺🇸</a>'},
-                  { innerHTML: '<a href="./morrisDavidowitz.html" target="_blank">Morris 🇺🇸</a>'},
-                  { innerHTML: "Tzvi 🇺🇸" }
-                ]
-              },
-              {
-                innerHTML: '<a href="./chayaHershkowitz.html" target="_blank">Chaya</a>',
-                children: [
-                  { innerHTML: "Fred 🇺🇸" }
-                ]
-              },
-              { innerHTML: '<a href="./malkaHershkowitz.html" target="_blank">Malka</a> 🪦' },
-              { innerHTML: '<a href="./chaimHerskowitz.html" target="_blank">Chaim</a>' },
-              { innerHTML: '<a href="./mordechaiHerskowitz.html" target="_blank">Mordechai (Marton)</a>' },
-              { innerHTML: '<a href="./irvingHerskowitz.html" target="_blank">Irving</a>' },
-              { innerHTML: '<a href="./leahhershkowitz.html" target="_blank">Leah</a> 🪦'},
-              { innerHTML: '<a href="./hershmeilichhershkowitz.html" target="_blank">Hersh Meilich</a> 🪦'},
-              { innerHTML: '<a href="./yechezkelhershkowitz.html" target="_blank">Yechezkel</a>'}   
-            ]
-          },
-
-{
-            innerHTML:  '<a href="./saraFarkas.html" target="_blank">Sarah 🪦</a>',
           }
-
-
-
-
-
-
         ]
       }
     };
