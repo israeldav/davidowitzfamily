@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Herskowitz Family Tree</title>
+  <title>Davidowitz & Herskowitz Family Tree</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -346,7 +346,7 @@
 </head>
 <body>
   <div class="page">
-    <h1>Herskowitz Family Tree</h1>
+    <h1>Davidowitz & Herskowitz Family Tree</h1>
     <div id="tree-status" class="tree-status">Showing the full family tree.</div>
     <div class="tree-shell">
       <div class="tree-toolbar">
@@ -389,177 +389,299 @@
 
     var treeData = [
       {
-        lines: [
-          personPage('mordechaiLebovics.html', 'Mordechai') + ' &amp; Devorah (Dora nee Lebovics) Farkas'
-        ],
+        lines: ['Davidowitz &amp; Herskowitz Family Tree'],
+        note: 'Combined branches from both family trees',
         children: [
           {
-            lines: [
-              personPage('FaigaGoldinger.html', 'Feiga') + ' &amp; ' + personPage('ShalomYosefGoldinger.html', 'Shalom Yosef Goldinger')
-            ],
-            badges: [badge('Deceased', true)],
+            lines: ['Moshe Moscovics'],
             children: [
               {
-                lines: ['Rivkah Fleisher'],
+                lines: [
+                  personPage('mechelDavidowitz.html', 'Mechel') + ' &amp; ' + personPage('tziporaDavidowitz.html', 'Tziporah') + ' (Moskovics)'
+                ],
                 children: [
-              {
-                lines: ['Freida Riven'],
-                badges: [flagBadge('🇺🇸', 'United States')]
-              }
-            ]
-          },
-              {
-                lines: ['Tzvi Yechiel'],
-                badges: [badge('Deceased', true)]
+                  {
+                    lines: [personPage('shlomoDavidowitz.html', 'Shlomo')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('avrohamDavidowitz.html', 'Avroham')],
+                    children: [
+                      { lines: ['Tziporah'] },
+                      { lines: ['Micha'] }
+                    ]
+                  },
+                  {
+                    lines: [personPage('peppiDavidowitz.html', 'Pesil')],
+                    children: [
+                      { lines: ['Shmuel'] },
+                      { lines: ['Isaac'] },
+                      { lines: ['Tziporah'] },
+                      { lines: ['Chana Feiga'] },
+                      { lines: ['Golda'] },
+                      { lines: ['Michael'] }
+                    ]
+                  },
+                  { lines: [personPage('szerenaDavidowitz.html', 'Szerena (Sarah)')] },
+                  { lines: [personPage('isaacDavidowitzBenMechel.html', 'Isaac')] },
+                  { lines: [personPage('estherDavidowitz.html', 'Esther')] },
+                  { lines: [personPage('suriDavidowitzBasMechel.html', 'Suri')] },
+                  {
+                    lines: [personPage('etelDavidowitz.html', 'Etel')],
+                    badges: [badge('Deceased', true)],
+                    children: [
+                      { lines: ['Mechel'] },
+                      { lines: ['Isaac'] },
+                      { lines: ['Shmuel'] },
+                      { lines: ['Avroham Yehuda'] }
+                    ]
+                  },
+                  {
+                    lines: [
+                      personPage('moshe.html', 'Moshe') + ' &amp; ' + personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')
+                    ],
+                    linked: true,
+                    children: [
+                      { lines: [personPage('srulDavidowitz.html', 'Srul')] },
+                      { lines: [personPage('danielDavidowitz.html', 'Daniel')] },
+                      { lines: [personPage('shmuelDavidowitz.html', 'Shmuel')] },
+                      {
+                        lines: [
+                          personPage('zaidy.html', 'Irving') + ' &amp; ' + personPage('bubby.html', 'Sarah')
+                        ],
+                        linked: true,
+                        children: [
+                          {
+                            lines: [personPage('fredDavidowitz.html', 'Fred')],
+                            badges: [flagBadge('🇺🇸', 'United States')]
+                          },
+                          {
+                            lines: [personPage('morrisDavidowitz.html', 'Morris')],
+                            badges: [flagBadge('🇺🇸', 'United States')]
+                          },
+                          {
+                            lines: ['Tzvi'],
+                            badges: [flagBadge('🇺🇸', 'United States')]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    lines: [
+                      'Moshe &amp; ' + personPage('miriamDavidowitz.html', 'Miriam')
+                    ],
+                    children: [
+                      { lines: ['Izzy'] },
+                      { lines: [personPage('ceilDavidowitz.html', 'Ceil')] },
+                      { lines: [personPage('mitchDavidowitz.html', 'Mitch')] }
+                    ]
+                  }
+                ]
               },
               {
-                lines: ['Ita'],
-                badges: [badge('Deceased', true)]
+                lines: ['Leib (Leba) Herskovics'],
+                children: [
+                  {
+                    lines: [personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')],
+                    linked: true,
+                    note: 'duplicate'
+                  }
+                ]
               },
               {
-                lines: ['Leah'],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('mordechaiGoldinger.html', 'Mordechai')],
-                badges: [badge('Deceased', true)]
+                lines: ['Shmuel Klein &amp; Leni (nee Herschkovics)'],
+                children: [
+                  {
+                    lines: [personPage('poliKlein.html', 'Poli (Toli) Herskovics (nee Klein)')],
+                    children: [
+                      {
+                        lines: [personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')],
+                        linked: true,
+                        note: 'duplicate'
+                      },
+                      { lines: ['Eizik Herskovics'] },
+                      { lines: ['Beniamin Herskovics'] },
+                      { lines: ['Eszter Herskovics'] }
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
             lines: [
-              personPage('breinaAroni.html', 'Breina (Bertha)') + ' &amp; ' + personPage('yosefAroni.html', 'Yosef') + ' Aroni'
+              personPage('mordechaiLebovics.html', 'Mordechai') + ' &amp; Devorah (Dora nee Lebovics) Farkas'
             ],
-            badges: [badge('Deceased', true)],
             children: [
               {
-                lines: [personPage('henrikAron.html', 'Henrik (Yechezkel)')],
+                lines: [
+                  personPage('FaigaGoldinger.html', 'Feiga') + ' &amp; ' + personPage('ShalomYosefGoldinger.html', 'Shalom Yosef Goldinger')
+                ],
+                badges: [badge('Deceased', true)],
                 children: [
                   {
-                    lines: ['Benni'],
-                    badges: [flagBadge('🇦🇺', 'Australia')]
+                    lines: ['Rivkah Fleisher'],
+                    children: [
+                      {
+                        lines: ['Freida Riven'],
+                        badges: [flagBadge('🇺🇸', 'United States')]
+                      }
+                    ]
                   },
                   {
-                    lines: ['Eve Fried'],
-                    badges: [flagBadge('🇦🇺', 'Australia')]
+                    lines: ['Tzvi Yechiel'],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: ['Ita'],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: ['Leah'],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('mordechaiGoldinger.html', 'Mordechai')],
+                    badges: [badge('Deceased', true)]
                   }
                 ]
               },
               {
-                lines: ['Tzvi'],
+                lines: [
+                  personPage('breinaAroni.html', 'Breina (Bertha)') + ' &amp; ' + personPage('yosefAroni.html', 'Yosef') + ' Aroni'
+                ],
+                badges: [badge('Deceased', true)],
                 children: [
                   {
-                    lines: ['Chaim'],
-                    badges: [flagBadge('🇮🇱', 'Israel')]
-                  }
-                ]
-              },
-              {
-                lines: [personPage('MordechaiAron.html', 'Mordechai (Marton)')],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('eliasAroni.html', 'Elias')],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: ['Chaim Aryeh (Herman)'],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('malkaAron.html', 'Malka (Margit)')],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('fredaAroni.html', 'Frieda')],
-                badges: [badge('Deceased', true)]
-              }
-            ]
-          },
-          {
-            lines: [
-              personPage('freidahershkowitz.html', 'Freida (Farkas)') + ' &amp; ' + personPage('efraimhershkowitz.html', 'Froim')
-            ],
-            linked: true,
-            badges: [badge('Deceased', true)],
-            children: [
-              {
-                lines: [personPage('bubby.html', 'Sarah')],
-                children: [
-                  {
-                    lines: [personPage('fredDavidowitz.html', 'Fred')],
-                    badges: [flagBadge('🇺🇸', 'United States')]
-                  },
-                  {
-                    lines: [personPage('morrisDavidowitz.html', 'Morris')],
-                    badges: [flagBadge('🇺🇸', 'United States')]
+                    lines: [personPage('henrikAron.html', 'Henrik (Yechezkel)')],
+                    children: [
+                      {
+                        lines: ['Benni'],
+                        badges: [flagBadge('🇦🇺', 'Australia')]
+                      },
+                      {
+                        lines: ['Eve Fried'],
+                        badges: [flagBadge('🇦🇺', 'Australia')]
+                      }
+                    ]
                   },
                   {
                     lines: ['Tzvi'],
-                    badges: [flagBadge('🇺🇸', 'United States')]
+                    children: [
+                      {
+                        lines: ['Chaim'],
+                        badges: [flagBadge('🇮🇱', 'Israel')]
+                      }
+                    ]
+                  },
+                  {
+                    lines: [personPage('MordechaiAron.html', 'Mordechai (Marton)')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('eliasAroni.html', 'Elias')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: ['Chaim Aryeh (Herman)'],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('malkaAron.html', 'Malka (Margit)')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('fredaAroni.html', 'Frieda')],
+                    badges: [badge('Deceased', true)]
                   }
                 ]
               },
               {
-                lines: [personPage('chayaHershkowitz.html', 'Chaya')],
+                lines: [
+                  personPage('freidahershkowitz.html', 'Freida (Farkas)') + ' &amp; ' + personPage('efraimhershkowitz.html', 'Froim')
+                ],
+                linked: true,
+                badges: [badge('Deceased', true)],
                 children: [
                   {
-                    lines: ['Fred'],
-                    badges: [flagBadge('🇺🇸', 'United States')]
-                  }
-                ]
-              },
-              {
-                lines: [personPage('malkaHershkowitz.html', 'Malka')],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('branaHerskovics.html', 'Brana Moskovics')],
-                children: [
+                    lines: [
+                      personPage('bubby.html', 'Sarah') + ' &amp; ' + personPage('zaidy.html', 'Irving')
+                    ],
+                    linked: true,
+                    children: [
+                      {
+                        lines: [personPage('fredDavidowitz.html', 'Fred')],
+                        badges: [flagBadge('🇺🇸', 'United States')]
+                      },
+                      {
+                        lines: [personPage('morrisDavidowitz.html', 'Morris')],
+                        badges: [flagBadge('🇺🇸', 'United States')]
+                      },
+                      {
+                        lines: ['Tzvi'],
+                        badges: [flagBadge('🇺🇸', 'United States')]
+                      }
+                    ]
+                  },
                   {
-                    lines: [personPage('jacobMoskovics.html', 'Jacob Moskovics')]
-                  }
+                    lines: [personPage('chayaHershkowitz.html', 'Chaya')],
+                    children: [
+                      {
+                        lines: ['Fred'],
+                        badges: [flagBadge('🇺🇸', 'United States')]
+                      }
+                    ]
+                  },
+                  {
+                    lines: [personPage('malkaHershkowitz.html', 'Malka')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('branaHerskovics.html', 'Brana Moskovics')],
+                    children: [
+                      {
+                        lines: [personPage('jacobMoskovics.html', 'Jacob Moskovics')]
+                      }
+                    ]
+                  },
+                  { lines: [personPage('chaimHerskowitz.html', 'Chaim')] },
+                  { lines: [personPage('mordechaiHerskowitz.html', 'Mordechai (Marton)')] },
+                  {
+                    lines: [personPage('irvingHerskowitz.html', 'Irving')],
+                    linked: true,
+                    note: 'duplicate'
+                  },
+                  {
+                    lines: [personPage('leahhershkowitz.html', 'Leah')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  {
+                    lines: [personPage('hershmeilichhershkowitz.html', 'Hersh Meilich')],
+                    badges: [badge('Deceased', true)]
+                  },
+                  { lines: [personPage('yechezkelhershkowitz.html', 'Yechezkel')] }
                 ]
               },
               {
-                lines: [personPage('chaimHerskowitz.html', 'Chaim')]
-              },
-              {
-                lines: [personPage('mordechaiHerskowitz.html', 'Mordechai (Marton)')]
-              },
-              {
-                lines: [personPage('irvingHerskowitz.html', 'Irving')]
-              },
-              {
-                lines: [personPage('leahhershkowitz.html', 'Leah')],
+                lines: [personPage('saraFarkas.html', 'Sarah')],
                 badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('hershmeilichhershkowitz.html', 'Hersh Meilich')],
-                badges: [badge('Deceased', true)]
-              },
-              {
-                lines: [personPage('yechezkelhershkowitz.html', 'Yechezkel')]
               }
             ]
           },
           {
-            lines: [personPage('saraFarkas.html', 'Sarah')],
-            badges: [badge('Deceased', true)]
-          }
-        ]
-      },
-      {
-        lines: ['Meir &amp; Fischel (nee Jakobovics) Herskovics'],
-        children: [
-          {
-            lines: [personPage('efraimhershkowitz.html', 'Froim')],
-            linked: true,
-            badges: [badge('Deceased', true)],
-            note: 'duplicate'
-          },
-          {
-            lines: [personPage('shmuelHershkowitz.html', 'Shmuel')]
+            lines: ['Meir &amp; Fischel (nee Jakobovics) Herskovics'],
+            children: [
+              {
+                lines: [personPage('efraimhershkowitz.html', 'Froim')],
+                linked: true,
+                badges: [badge('Deceased', true)],
+                note: 'duplicate'
+              },
+              {
+                lines: [personPage('shmuelHershkowitz.html', 'Shmuel')]
+              }
+            ]
           }
         ]
       }
