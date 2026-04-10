@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Herskowitz Family Tree</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page-bg: #f9f9f9;
+      --panel-bg: #ffffff;
+      --card-bg: #ffffff;
+      --card-border: #999999;
+      --card-link-border: #66ccff;
+      --card-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      --text: #222222;
+      --muted: #666666;
+      --line: #b8b8b8;
+      --link: #1458b8;
+      --badge-bg: #eef4ff;
+      --badge-text: #174b8a;
+      --badge-muted-bg: #f0f0f0;
+      --badge-muted-text: #666666;
+      --tree-gap-y: 42px;
+      --tree-gap-x: 18px;
+      --card-width: 228px;
+      --card-radius: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: "Oxygen", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .page {
+      padding: 10px 12px 24px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .tree-shell {
+      width: 100%;
+      overflow: auto;
+      padding: 12px 12px 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 246, 249, 0.98));
+      border-radius: 10px;
+    }
+
+    .tree-root-row {
+      min-width: max-content;
+      display: flex;
+      gap: 56px;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4px 4px 10px;
+    }
+
+    .tree,
+    .tree ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tree {
+      display: inline-block;
+    }
+
+    .tree ul {
+      display: flex;
+      justify-content: center;
+      gap: var(--tree-gap-x);
+      padding-top: var(--tree-gap-y);
+      position: relative;
+    }
+
+    .tree li {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: var(--card-width);
+      padding: 0 4px;
+    }
+
+    .tree ul::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 0;
+      height: 22px;
+      border-left: 1px solid var(--line);
+      transform: translateX(-0.5px);
+    }
+
+    .tree li::before,
+    .tree li::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .tree li::before {
+      right: 50%;
+    }
+
+    .tree li::after {
+      left: 50%;
+      border-left: 1px solid var(--line);
+    }
+
+    .tree li:only-child::before,
+    .tree li:only-child::after {
+      display: none;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+      border-top: none;
+    }
+
+    .tree li:last-child::before {
+      border-right: 1px solid var(--line);
+      border-radius: 0 8px 0 0;
+    }
+
+    .tree li:first-child::after {
+      border-radius: 8px 0 0 0;
+    }
+
+    .tree-node {
+      width: var(--card-width);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 7px 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tree-node.linked {
+      border: 2px solid var(--card-link-border);
+    }
+
+    .tree-line {
+      font-size: 14px;
+      line-height: 1.3;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .tree-line + .tree-line {
+      margin-top: 4px;
+    }
+
+    .tree-line a {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .tree-line a:hover {
+      text-decoration: underline;
+    }
+
+    .tree-note {
+      margin-top: 5px;
+      font-size: 11px;
+      line-height: 1.2;
+      color: var(--muted);
+    }
+
+    .tree-badges {
+      margin-top: 6px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tree-badge {
+      font-size: 10px;
+      line-height: 1;
+      border-radius: 999px;
+      padding: 4px 6px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+    }
+
+    .tree-badge.muted {
+      background: var(--badge-muted-bg);
+      color: var(--badge-muted-text);
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        padding: 8px 6px 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .tree-shell {
+        padding: 8px 8px 20px;
+      }
+
+      .tree-root-row {
+        gap: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Herskowitz Family Tree</h1>
+    <div class="tree-shell">
+      <div id="tree-root" class="tree-root-row"></div>
+    </div>
+  </div>
+
+  <script>
+    function personPage(fileName, label) {
+      return '<a href="../' + fileName + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+    }
+
+    function badge(label, muted) {
+      return '<span class="tree-badge' + (muted ? ' muted' : '') + '">' + label + '</span>';
+    }
+
+    var treeData = [
+      {
+        lines: [
+          personPage('mordechaiLebovics.html', 'Mordechai') + ' &amp; Devorah (Dora nee Lebovics) Farkas'
+        ],
+        children: [
+          {
+            lines: [
+              personPage('FaigaGoldinger.html', 'Feiga') + ' &amp; ' + personPage('ShalomYosefGoldinger.html', 'Shalom Yosef Goldinger')
+            ],
+            badges: [badge('Deceased', true)],
+            children: [
+              {
+                lines: ['Rivkah Fleisher'],
+                children: [
+                  {
+                    lines: ['Freida Riven'],
+                    badges: [badge('USA', false)]
+                  }
+                ]
+              },
+              {
+                lines: ['Tzvi Yechiel'],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: ['Ita'],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: ['Leah'],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('mordechaiGoldinger.html', 'Mordechai')],
+                badges: [badge('Deceased', true)]
+              }
+            ]
+          },
+          {
+            lines: [
+              personPage('breinaAroni.html', 'Breina (Bertha)') + ' &amp; ' + personPage('yosefAroni.html', 'Yosef') + ' Aroni'
+            ],
+            badges: [badge('Deceased', true)],
+            children: [
+              {
+                lines: [personPage('henrikAron.html', 'Henrik (Yechezkel)')],
+                children: [
+                  {
+                    lines: ['Benni'],
+                    badges: [badge('Australia', false)]
+                  },
+                  {
+                    lines: ['Eve Fried'],
+                    badges: [badge('Australia', false)]
+                  }
+                ]
+              },
+              {
+                lines: ['Tzvi'],
+                children: [
+                  {
+                    lines: ['Chaim'],
+                    badges: [badge('Israel', false)]
+                  }
+                ]
+              },
+              {
+                lines: [personPage('MordechaiAron.html', 'Mordechai (Marton)')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('eliasAroni.html', 'Elias')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: ['Chaim Aryeh (Herman)'],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('malkaAron.html', 'Malka (Margit)')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('fredaAroni.html', 'Frieda')],
+                badges: [badge('Deceased', true)]
+              }
+            ]
+          },
+          {
+            lines: [
+              personPage('freidahershkowitz.html', 'Freida (Farkas)') + ' &amp; ' + personPage('efraimhershkowitz.html', 'Froim')
+            ],
+            linked: true,
+            badges: [badge('Deceased', true)],
+            children: [
+              {
+                lines: [personPage('bubby.html', 'Sarah')],
+                children: [
+                  {
+                    lines: [personPage('fredDavidowitz.html', 'Fred')],
+                    badges: [badge('USA', false)]
+                  },
+                  {
+                    lines: [personPage('morrisDavidowitz.html', 'Morris')],
+                    badges: [badge('USA', false)]
+                  },
+                  {
+                    lines: ['Tzvi'],
+                    badges: [badge('USA', false)]
+                  }
+                ]
+              },
+              {
+                lines: [personPage('chayaHershkowitz.html', 'Chaya')],
+                children: [
+                  {
+                    lines: ['Fred'],
+                    badges: [badge('USA', false)]
+                  }
+                ]
+              },
+              {
+                lines: [personPage('malkaHershkowitz.html', 'Malka')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('branaHerskovics.html', 'Brana Moskovics')],
+                children: [
+                  {
+                    lines: [personPage('jacobMoskovics.html', 'Jacob Moskovics')]
+                  }
+                ]
+              },
+              {
+                lines: [personPage('chaimHerskowitz.html', 'Chaim')]
+              },
+              {
+                lines: [personPage('mordechaiHerskowitz.html', 'Mordechai (Marton)')]
+              },
+              {
+                lines: [personPage('irvingHerskowitz.html', 'Irving')]
+              },
+              {
+                lines: [personPage('leahhershkowitz.html', 'Leah')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('hershmeilichhershkowitz.html', 'Hersh Meilich')],
+                badges: [badge('Deceased', true)]
+              },
+              {
+                lines: [personPage('yechezkelhershkowitz.html', 'Yechezkel')]
+              }
+            ]
+          },
+          {
+            lines: [personPage('saraFarkas.html', 'Sarah')],
+            badges: [badge('Deceased', true)]
+          }
+        ]
+      },
+      {
+        lines: ['Meir &amp; Fischel (nee Jakobovics) Herskovics'],
+        children: [
+          {
+            lines: [personPage('efraimhershkowitz.html', 'Froim')],
+            linked: true,
+            badges: [badge('Deceased', true)],
+            note: 'duplicate'
+          },
+          {
+            lines: [personPage('shmuelHershkowitz.html', 'Shmuel')]
+          }
+        ]
+      }
+    ];
+
+    function createNodeCard(node) {
+      var card = document.createElement('div');
+      card.className = 'tree-node' + (node.linked ? ' linked' : '');
+
+      (node.lines || []).forEach(function (line) {
+        var lineEl = document.createElement('div');
+        lineEl.className = 'tree-line';
+        lineEl.innerHTML = line;
+        card.appendChild(lineEl);
+      });
+
+      if (node.note) {
+        var noteEl = document.createElement('div');
+        noteEl.className = 'tree-note';
+        noteEl.textContent = node.note;
+        card.appendChild(noteEl);
+      }
+
+      if (node.badges && node.badges.length) {
+        var badgeWrap = document.createElement('div');
+        badgeWrap.className = 'tree-badges';
+        node.badges.forEach(function (badgeHtml) {
+          var holder = document.createElement('div');
+          holder.innerHTML = badgeHtml;
+          badgeWrap.appendChild(holder.firstChild);
+        });
+        card.appendChild(badgeWrap);
+      }
+
+      return card;
+    }
+
+    function renderTree(node) {
+      var li = document.createElement('li');
+      li.appendChild(createNodeCard(node));
+
+      if (node.children && node.children.length) {
+        var childList = document.createElement('ul');
+        node.children.forEach(function (child) {
+          childList.appendChild(renderTree(child));
+        });
+        li.appendChild(childList);
+      }
+
+      return li;
+    }
+
+    function renderForest(forest, container) {
+      forest.forEach(function (rootNode) {
+        var tree = document.createElement('ul');
+        tree.className = 'tree';
+        tree.appendChild(renderTree(rootNode));
+        container.appendChild(tree);
+      });
+    }
+
+    renderForest(treeData, document.getElementById('tree-root'));
+  </script>
+</body>
+</html>
