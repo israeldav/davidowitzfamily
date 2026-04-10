@@ -159,13 +159,49 @@
       border: 1px solid var(--card-border);
       border-radius: var(--card-radius);
       box-shadow: var(--card-shadow);
-      padding: 7px 10px;
+      padding: 34px 10px 7px;
       position: relative;
       z-index: 1;
     }
 
     .tree-node.linked {
       border: 2px solid var(--card-link-border);
+    }
+
+    .tree-focus-toggle {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #c4c7cc;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #4b5563;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+
+    .tree-focus-toggle:hover {
+      background: #f4f7fb;
+      border-color: #99b8e6;
+      color: #1458b8;
+    }
+
+    .tree-focus-toggle.active {
+      background: #1458b8;
+      border-color: #1458b8;
+      color: #ffffff;
+    }
+
+    .tree-focus-toggle svg {
+      width: 12px;
+      height: 12px;
+      display: block;
     }
 
     .tree-line {
@@ -220,6 +256,14 @@
       color: var(--badge-muted-text);
     }
 
+    .tree-status {
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted);
+      margin: -2px 0 12px;
+    }
+
     @media (max-width: 900px) {
       .page {
         padding: 8px 6px 16px;
@@ -243,12 +287,17 @@
 <body>
   <div class="page">
     <h1>Herskowitz Family Tree</h1>
+    <div id="tree-status" class="tree-status">Showing the full family tree.</div>
     <div class="tree-shell">
       <div id="tree-root" class="tree-root-row"></div>
     </div>
   </div>
 
   <script>
+    var treeRootEl = document.getElementById('tree-root');
+    var treeStatusEl = document.getElementById('tree-status');
+    var currentFocusId = null;
+
     function personPage(fileName, label) {
       return '<a href="../' + fileName + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
     }
@@ -435,9 +484,75 @@
       }
     ];
 
+    var nextNodeId = 1;
+    var nodeLookup = {};
+
+    function assignNodeIds(nodes) {
+      nodes.forEach(function (node) {
+        node.id = node.id || 'node-' + nextNodeId++;
+        nodeLookup[node.id] = node;
+
+        if (node.children && node.children.length) {
+          assignNodeIds(node.children);
+        }
+      });
+    }
+
+    assignNodeIds(treeData);
+
+    function focusIconSvg() {
+      return '' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<path fill="currentColor" d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm14 0h2v6h-6v-2h4v-4zm-9-5h6v6H9V9zm2 2v2h2v-2h-2z"></path>' +
+        '</svg>';
+    }
+
+    function toggleFocus(nodeId) {
+      currentFocusId = currentFocusId === nodeId ? null : nodeId;
+      renderCurrentTree();
+    }
+
+    function getVisibleForest() {
+      if (!currentFocusId) {
+        return treeData;
+      }
+
+      return nodeLookup[currentFocusId] ? [nodeLookup[currentFocusId]] : treeData;
+    }
+
+    function updateStatus() {
+      if (!currentFocusId || !nodeLookup[currentFocusId]) {
+        treeStatusEl.textContent = 'Showing the full family tree.';
+        return;
+      }
+
+      var focusedNode = nodeLookup[currentFocusId];
+      var label = focusedNode.focusLabel || stripHtml((focusedNode.lines || []).join(' '));
+      treeStatusEl.textContent = 'Showing only the branch for ' + label + '. Click the same icon again to return to the full tree.';
+    }
+
+    function stripHtml(value) {
+      var temp = document.createElement('div');
+      temp.innerHTML = value;
+      return temp.textContent.replace(/\s+/g, ' ').trim();
+    }
+
     function createNodeCard(node) {
       var card = document.createElement('div');
       card.className = 'tree-node' + (node.linked ? ' linked' : '');
+
+      var focusToggle = document.createElement('button');
+      focusToggle.type = 'button';
+      focusToggle.className = 'tree-focus-toggle' + (currentFocusId === node.id ? ' active' : '');
+      focusToggle.setAttribute('aria-label', currentFocusId === node.id ? 'Show the full family tree' : 'Show only this branch');
+      focusToggle.title = currentFocusId === node.id ? 'Return to the full family tree' : 'Show only this branch';
+      focusToggle.innerHTML = focusIconSvg();
+      focusToggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFocus(node.id);
+      });
+      card.appendChild(focusToggle);
 
       (node.lines || []).forEach(function (line) {
         var lineEl = document.createElement('div');
@@ -483,6 +598,8 @@
     }
 
     function renderForest(forest, container) {
+      container.innerHTML = '';
+
       forest.forEach(function (rootNode) {
         var tree = document.createElement('ul');
         tree.className = 'tree';
@@ -491,7 +608,12 @@
       });
     }
 
-    renderForest(treeData, document.getElementById('tree-root'));
+    function renderCurrentTree() {
+      renderForest(getVisibleForest(), treeRootEl);
+      updateStatus();
+    }
+
+    renderCurrentTree();
   </script>
 </body>
 </html>
