@@ -27,6 +27,8 @@
       --tree-gap-x: 18px;
       --card-width: 228px;
       --card-radius: 4px;
+      --zoom-min: 0.28;
+      --zoom-max: 1.5;
     }
 
     * {
@@ -60,10 +62,64 @@
 
     .tree-shell {
       width: 100%;
-      overflow: auto;
       padding: 12px 12px 28px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 246, 249, 0.98));
       border-radius: 10px;
+    }
+
+    .tree-toolbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 12px;
+      flex-wrap: wrap;
+    }
+
+    .tree-zoom-button,
+    .tree-fit-button {
+      height: 32px;
+      min-width: 32px;
+      border: 1px solid #ccd2da;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #334155;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 12px;
+      transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+
+    .tree-zoom-button {
+      padding: 0;
+    }
+
+    .tree-zoom-button:hover,
+    .tree-fit-button:hover {
+      background: #f4f7fb;
+      border-color: #99b8e6;
+      color: #1458b8;
+    }
+
+    .tree-zoom-readout {
+      min-width: 48px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .tree-viewport {
+      overflow: auto;
+      width: 100%;
+    }
+
+    .tree-scale-stage {
+      width: max-content;
+      min-width: 100%;
+      margin: 0 auto;
+      transform-origin: top center;
     }
 
     .tree-root-row {
@@ -73,6 +129,7 @@
       justify-content: center;
       align-items: flex-start;
       padding: 4px 4px 10px;
+      transform-origin: top center;
     }
 
     .tree,
@@ -89,7 +146,6 @@
     .tree ul {
       display: flex;
       justify-content: center;
-      gap: var(--tree-gap-x);
       padding-top: var(--tree-gap-y);
       position: relative;
     }
@@ -101,7 +157,7 @@
       align-items: center;
       text-align: center;
       min-width: var(--card-width);
-      padding: 0 4px;
+      padding: 0 calc(var(--tree-gap-x) / 2);
     }
 
     .tree ul::before {
@@ -281,6 +337,10 @@
       .tree-root-row {
         gap: 32px;
       }
+
+      .tree-toolbar {
+        gap: 8px;
+      }
     }
   </style>
 </head>
@@ -289,14 +349,35 @@
     <h1>Herskowitz Family Tree</h1>
     <div id="tree-status" class="tree-status">Showing the full family tree.</div>
     <div class="tree-shell">
-      <div id="tree-root" class="tree-root-row"></div>
+      <div class="tree-toolbar">
+        <button id="zoom-out" class="tree-zoom-button" type="button" aria-label="Zoom out">-</button>
+        <div id="zoom-readout" class="tree-zoom-readout">100%</div>
+        <button id="zoom-in" class="tree-zoom-button" type="button" aria-label="Zoom in">+</button>
+        <button id="zoom-fit" class="tree-fit-button" type="button">Fit Tree</button>
+      </div>
+      <div id="tree-viewport" class="tree-viewport">
+        <div id="tree-scale-stage" class="tree-scale-stage">
+          <div id="tree-root" class="tree-root-row"></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     var treeRootEl = document.getElementById('tree-root');
+    var treeViewportEl = document.getElementById('tree-viewport');
+    var treeScaleStageEl = document.getElementById('tree-scale-stage');
     var treeStatusEl = document.getElementById('tree-status');
+    var zoomReadoutEl = document.getElementById('zoom-readout');
+    var zoomOutEl = document.getElementById('zoom-out');
+    var zoomInEl = document.getElementById('zoom-in');
+    var zoomFitEl = document.getElementById('zoom-fit');
     var currentFocusId = null;
+    var currentZoom = 1;
+
+    function flagBadge(symbol, label) {
+      return '<span class="tree-badge" aria-label="' + label + '" title="' + label + '">' + symbol + '</span>';
+    }
 
     function personPage(fileName, label) {
       return '<a href="../' + fileName + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
@@ -321,12 +402,12 @@
               {
                 lines: ['Rivkah Fleisher'],
                 children: [
-                  {
-                    lines: ['Freida Riven'],
-                    badges: [badge('USA', false)]
-                  }
-                ]
-              },
+              {
+                lines: ['Freida Riven'],
+                badges: [flagBadge('🇺🇸', 'United States')]
+              }
+            ]
+          },
               {
                 lines: ['Tzvi Yechiel'],
                 badges: [badge('Deceased', true)]
@@ -356,11 +437,11 @@
                 children: [
                   {
                     lines: ['Benni'],
-                    badges: [badge('Australia', false)]
+                    badges: [flagBadge('🇦🇺', 'Australia')]
                   },
                   {
                     lines: ['Eve Fried'],
-                    badges: [badge('Australia', false)]
+                    badges: [flagBadge('🇦🇺', 'Australia')]
                   }
                 ]
               },
@@ -369,7 +450,7 @@
                 children: [
                   {
                     lines: ['Chaim'],
-                    badges: [badge('Israel', false)]
+                    badges: [flagBadge('🇮🇱', 'Israel')]
                   }
                 ]
               },
@@ -407,15 +488,15 @@
                 children: [
                   {
                     lines: [personPage('fredDavidowitz.html', 'Fred')],
-                    badges: [badge('USA', false)]
+                    badges: [flagBadge('🇺🇸', 'United States')]
                   },
                   {
                     lines: [personPage('morrisDavidowitz.html', 'Morris')],
-                    badges: [badge('USA', false)]
+                    badges: [flagBadge('🇺🇸', 'United States')]
                   },
                   {
                     lines: ['Tzvi'],
-                    badges: [badge('USA', false)]
+                    badges: [flagBadge('🇺🇸', 'United States')]
                   }
                 ]
               },
@@ -424,7 +505,7 @@
                 children: [
                   {
                     lines: ['Fred'],
-                    badges: [badge('USA', false)]
+                    badges: [flagBadge('🇺🇸', 'United States')]
                   }
                 ]
               },
@@ -503,8 +584,45 @@
     function focusIconSvg() {
       return '' +
         '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-          '<path fill="currentColor" d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm14 0h2v6h-6v-2h4v-4zm-9-5h6v6H9V9zm2 2v2h2v-2h-2z"></path>' +
+          '<path fill="currentColor" d="M10 4a6 6 0 1 0 3.87 10.58l4.27 4.27 1.41-1.41-4.27-4.27A6 6 0 0 0 10 4zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm-.75 1.25h1.5v2h2v1.5h-2v2h-1.5v-2h-2v-1.5h2v-2z"></path>' +
         '</svg>';
+    }
+
+    function clampZoom(value) {
+      return Math.max(0.28, Math.min(1.5, value));
+    }
+
+    function updateZoomDisplay() {
+      zoomReadoutEl.textContent = Math.round(currentZoom * 100) + '%';
+    }
+
+    function applyZoom() {
+      treeRootEl.style.transform = 'scale(' + currentZoom + ')';
+      treeScaleStageEl.style.width = Math.max(treeViewportEl.clientWidth, treeRootEl.scrollWidth * currentZoom) + 'px';
+      treeScaleStageEl.style.height = Math.max(treeRootEl.scrollHeight * currentZoom, 40) + 'px';
+      updateZoomDisplay();
+    }
+
+    function setZoom(value) {
+      currentZoom = clampZoom(value);
+      applyZoom();
+    }
+
+    function fitTreeToViewport() {
+      var previousTransform = treeRootEl.style.transform;
+      treeRootEl.style.transform = 'scale(1)';
+      var fullWidth = treeRootEl.scrollWidth;
+      var viewportWidth = treeViewportEl.clientWidth - 16;
+      treeRootEl.style.transform = previousTransform;
+
+      if (!fullWidth || !viewportWidth) {
+        setZoom(1);
+        return;
+      }
+
+      setZoom(Math.min(1, viewportWidth / fullWidth));
+      treeViewportEl.scrollLeft = 0;
+      treeViewportEl.scrollTop = 0;
     }
 
     function toggleFocus(nodeId) {
@@ -611,7 +729,24 @@
     function renderCurrentTree() {
       renderForest(getVisibleForest(), treeRootEl);
       updateStatus();
+      fitTreeToViewport();
     }
+
+    zoomOutEl.addEventListener('click', function () {
+      setZoom(currentZoom - 0.12);
+    });
+
+    zoomInEl.addEventListener('click', function () {
+      setZoom(currentZoom + 0.12);
+    });
+
+    zoomFitEl.addEventListener('click', function () {
+      fitTreeToViewport();
+    });
+
+    window.addEventListener('resize', function () {
+      applyZoom();
+    });
 
     renderCurrentTree();
   </script>
