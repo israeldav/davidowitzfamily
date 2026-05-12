@@ -46,33 +46,6 @@
       padding: 18px 16px 40px;
     }
 
-    .hero {
-      border: 1px solid rgba(240, 87, 156, 0.16);
-      border-radius: 28px;
-      background:
-        radial-gradient(circle at top right, rgba(240, 87, 156, 0.10), transparent 28%),
-        radial-gradient(circle at top left, rgba(255, 189, 58, 0.16), transparent 24%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
-      box-shadow: var(--shadow);
-      padding: 28px 24px 22px;
-      margin-bottom: 18px;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(32px, 6vw, 56px);
-      line-height: 1.02;
-      color: #1e3f95;
-    }
-
-    .hero p {
-      margin: 10px 0 0;
-      max-width: 760px;
-      font-size: 16px;
-      line-height: 1.55;
-      color: var(--muted);
-    }
-
     .branch-chooser,
     .viewer-panel {
       border: 1px solid var(--border);
@@ -369,11 +342,6 @@
 </head>
 <body>
   <div class="page">
-    <section class="hero">
-      <h1>Family Branch Viewer</h1>
-      <p>Pick a major family root or couple, then view that branch on its own in a cleaner descendant chart. The data stays editable in one simple `nodes` file.</p>
-    </section>
-
     <section class="branch-chooser">
       <div class="chooser-head">
         <h2>Major Roots</h2>
@@ -420,9 +388,17 @@
     var treeStageEl = document.getElementById('tree-stage');
     var zoomResetEl = document.getElementById('zoom-reset');
     var currentZoom = 1;
-    var activeBranchId = majorRoots[0] ? majorRoots[0].id : null;
+    var activeBranchId = 'view-all';
     var currentFocusKey = null;
     var focusHistory = [];
+
+    var allBranch = {
+      id: 'view-all',
+      label: 'View All',
+      people: [1, 2, 49, 50, 51, 52],
+      description: 'Show the full top-level family tree',
+      useAllRoots: true,
+    };
 
     familyNodes.forEach(function (node) {
       nodesById.set(node.id, node);
@@ -646,26 +622,38 @@
         return;
       }
 
-      var rootTree = buildCoupleTree(branch.people.slice(), new Set());
-      if (!rootTree) {
+      var roots = branch.useAllRoots
+        ? majorRoots.map(function (item) {
+            return buildCoupleTree(item.people.slice(), new Set());
+          }).filter(Boolean)
+        : [buildCoupleTree(branch.people.slice(), new Set())].filter(Boolean);
+
+      if (!roots.length) {
         treeRootEl.innerHTML = '<div class="empty">This branch could not be rendered.</div>';
         return;
       }
 
       if (currentFocusKey) {
-        var focused = findTreeNode(rootTree, currentFocusKey);
+        var focused = null;
+        roots.some(function (candidate) {
+          focused = findTreeNode(candidate, currentFocusKey);
+          return !!focused;
+        });
+
         if (focused) {
-          rootTree = focused;
+          roots = [focused];
         } else {
           currentFocusKey = null;
           focusHistory = [];
         }
       }
 
-      var tree = document.createElement('ul');
-      tree.className = 'tree';
-      tree.appendChild(renderNode(rootTree));
-      treeRootEl.appendChild(tree);
+      roots.forEach(function (rootTree) {
+        var tree = document.createElement('ul');
+        tree.className = 'tree';
+        tree.appendChild(renderNode(rootTree));
+        treeRootEl.appendChild(tree);
+      });
       applyZoom();
     }
 
@@ -673,7 +661,7 @@
       var filter = (filterText || '').trim().toLowerCase();
       branchListEl.innerHTML = '';
 
-      majorRoots.forEach(function (branch) {
+      [allBranch].concat(majorRoots).forEach(function (branch) {
         var haystack = (branch.label + ' ' + branch.description).toLowerCase();
         if (filter && haystack.indexOf(filter) === -1) {
           return;
@@ -704,7 +692,7 @@
     }
 
     function activeBranch() {
-      return majorRoots.find(function (branch) {
+      return [allBranch].concat(majorRoots).find(function (branch) {
         return branch.id === activeBranchId;
       }) || null;
     }
