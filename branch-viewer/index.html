@@ -73,14 +73,7 @@
       color: var(--muted);
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 330px minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
-    }
-
-    .sidebar,
+    .branch-chooser,
     .viewer-panel {
       border: 1px solid var(--border);
       border-radius: 24px;
@@ -89,26 +82,25 @@
       overflow: hidden;
     }
 
-    .sidebar {
-      position: sticky;
-      top: 14px;
+    .branch-chooser {
+      margin-bottom: 18px;
     }
 
-    .sidebar-head,
+    .chooser-head,
     .viewer-head {
       padding: 18px 18px 14px;
       border-bottom: 1px solid #edf2f7;
       background: linear-gradient(180deg, #ffffff, #fbfdff);
     }
 
-    .sidebar-head h2,
+    .chooser-head h2,
     .viewer-head h2 {
       margin: 0;
       font-size: 18px;
       line-height: 1.2;
     }
 
-    .sidebar-head p,
+    .chooser-head p,
     .viewer-head p {
       margin: 6px 0 0;
       font-size: 13px;
@@ -126,10 +118,9 @@
     }
 
     .branch-list {
-      display: grid;
+      display: flex;
       gap: 10px;
       padding: 14px;
-      max-height: 72vh;
       overflow: auto;
     }
 
@@ -142,6 +133,8 @@
       padding: 14px 14px 12px;
       cursor: pointer;
       transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+      min-width: 240px;
+      flex: 0 0 auto;
     }
 
     .branch-button:hover {
@@ -172,6 +165,7 @@
 
     .viewer-head {
       display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
@@ -182,6 +176,7 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      align-items: center;
     }
 
     .viewer-tools button {
@@ -301,6 +296,13 @@
       border: 2px solid rgba(17, 24, 39, 0.08);
       position: relative;
       z-index: 1;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .node-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 8px 10px 0 rgba(32, 47, 70, 0.11);
     }
 
     .node-card.linked {
@@ -317,15 +319,29 @@
       line-height: 1.18;
       font-weight: 700;
       letter-spacing: 0.02em;
+      padding-right: 28px;
     }
 
-    .node-name a {
+    .node-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(17, 24, 39, 0.16);
+      background: rgba(255, 255, 255, 0.72);
       color: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
+      font-size: 15px;
+      font-weight: 700;
     }
 
-    .node-name a:hover {
-      text-decoration: underline;
+    .node-info:hover {
+      background: #ffffff;
     }
 
     .node-meta {
@@ -349,16 +365,6 @@
       text-align: center;
       color: var(--muted);
     }
-
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: static;
-      }
-    }
   </style>
 </head>
 <body>
@@ -368,23 +374,23 @@
       <p>Pick a major family root or couple, then view that branch on its own in a cleaner descendant chart. The data stays editable in one simple `nodes` file.</p>
     </section>
 
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="sidebar-head">
-          <h2>Major Roots</h2>
-          <p>Start with a family couple or root branch instead of scrolling one huge tree.</p>
-          <input id="branch-search" class="branch-search" type="search" placeholder="Find a branch">
-        </div>
-        <div id="branch-list" class="branch-list"></div>
-      </aside>
+    <section class="branch-chooser">
+      <div class="chooser-head">
+        <h2>Major Roots</h2>
+        <p>Choose a family root or couple, then click any card in the tree to drill into that person’s descendants.</p>
+        <input id="branch-search" class="branch-search" type="search" placeholder="Find a branch">
+      </div>
+      <div id="branch-list" class="branch-list"></div>
+    </section>
 
-      <section class="viewer-panel">
+    <section class="viewer-panel">
         <div class="viewer-head">
           <div>
             <h2 id="viewer-title">Select a branch</h2>
             <p id="viewer-description">Choose one of the major roots on the left to focus the tree.</p>
           </div>
           <div class="viewer-tools">
+            <button id="back-out" type="button" hidden>Back Out</button>
             <button id="zoom-out" type="button">-</button>
             <button id="zoom-reset" type="button">100%</button>
             <button id="zoom-in" type="button">+</button>
@@ -396,7 +402,6 @@
           </div>
         </div>
       </section>
-    </div>
   </div>
 
   <script src="../family-data.js"></script>
@@ -410,11 +415,14 @@
     var branchSearchEl = document.getElementById('branch-search');
     var viewerTitleEl = document.getElementById('viewer-title');
     var viewerDescriptionEl = document.getElementById('viewer-description');
+    var backOutEl = document.getElementById('back-out');
     var treeRootEl = document.getElementById('tree-root');
     var treeStageEl = document.getElementById('tree-stage');
     var zoomResetEl = document.getElementById('zoom-reset');
     var currentZoom = 1;
     var activeBranchId = majorRoots[0] ? majorRoots[0].id : null;
+    var currentFocusKey = null;
+    var focusHistory = [];
 
     familyNodes.forEach(function (node) {
       nodesById.set(node.id, node);
@@ -510,6 +518,7 @@
         linked: isLinked,
         deceased: isDeceased,
         flag: flag,
+        href: people.length === 1 ? personHref(people[0]) : '',
       };
     }
 
@@ -538,9 +547,35 @@
       }).filter(Boolean);
 
       return {
+        key: dedupeKey,
         people: personIds,
         children: children,
       };
+    }
+
+    function findTreeNode(treeNode, key) {
+      if (!treeNode) {
+        return null;
+      }
+      if (treeNode.key === key) {
+        return treeNode;
+      }
+      for (var i = 0; i < (treeNode.children || []).length; i++) {
+        var found = findTreeNode(treeNode.children[i], key);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    }
+
+    function focusTreeNode(treeNode) {
+      if (!treeNode || !treeNode.children || !treeNode.children.length) {
+        return;
+      }
+      focusHistory.push(currentFocusKey);
+      currentFocusKey = treeNode.key;
+      updateViewer();
     }
 
     function renderNode(treeNode) {
@@ -550,11 +585,29 @@
       card.className = 'node-card' +
         (cardData.linked ? ' linked' : '') +
         (cardData.deceased ? ' deceased' : '');
+      card.addEventListener('click', function () {
+        focusTreeNode(treeNode);
+      });
 
       var name = document.createElement('div');
       name.className = 'node-name';
       name.innerHTML = cardData.title;
       card.appendChild(name);
+
+      if (cardData.href) {
+        var info = document.createElement('a');
+        info.className = 'node-info';
+        info.href = cardData.href;
+        info.target = '_blank';
+        info.rel = 'noopener noreferrer';
+        info.textContent = 'i';
+        info.title = 'Open detail page';
+        info.setAttribute('aria-label', 'Open detail page');
+        info.addEventListener('click', function (event) {
+          event.stopPropagation();
+        });
+        card.appendChild(info);
+      }
 
       if (cardData.meta.length) {
         var meta = document.createElement('div');
@@ -599,6 +652,16 @@
         return;
       }
 
+      if (currentFocusKey) {
+        var focused = findTreeNode(rootTree, currentFocusKey);
+        if (focused) {
+          rootTree = focused;
+        } else {
+          currentFocusKey = null;
+          focusHistory = [];
+        }
+      }
+
       var tree = document.createElement('ul');
       tree.className = 'tree';
       tree.appendChild(renderNode(rootTree));
@@ -621,6 +684,8 @@
         button.className = 'branch-button' + (branch.id === activeBranchId ? ' active' : '');
         button.addEventListener('click', function () {
           activeBranchId = branch.id;
+          currentFocusKey = null;
+          focusHistory = [];
           updateViewer();
         });
 
@@ -650,13 +715,22 @@
 
       if (!branch) {
         viewerTitleEl.textContent = 'Select a branch';
-        viewerDescriptionEl.textContent = 'Choose one of the major roots on the left to focus the tree.';
+        viewerDescriptionEl.textContent = 'Choose one of the major roots above to focus the tree.';
+        backOutEl.hidden = true;
         renderTree(null);
         return;
       }
 
-      viewerTitleEl.textContent = branch.label;
-      viewerDescriptionEl.textContent = branch.description + '. This chart shows descendants from that root/couple only.';
+      var focusedTree = currentFocusKey ? findTreeNode(buildCoupleTree(branch.people.slice(), new Set()), currentFocusKey) : null;
+      if (focusedTree) {
+        viewerTitleEl.textContent = nodeCardData(focusedTree.people).title.replace(/<[^>]+>/g, '');
+        viewerDescriptionEl.textContent = 'Showing descendants from this selected person or couple within the ' + branch.label + ' branch.';
+        backOutEl.hidden = false;
+      } else {
+        viewerTitleEl.textContent = branch.label;
+        viewerDescriptionEl.textContent = branch.description + '. Click a card to focus on that subtree.';
+        backOutEl.hidden = true;
+      }
       renderTree(branch);
     }
 
@@ -678,6 +752,11 @@
     zoomResetEl.addEventListener('click', function () {
       currentZoom = 1;
       applyZoom();
+    });
+
+    backOutEl.addEventListener('click', function () {
+      currentFocusKey = focusHistory.length ? focusHistory.pop() : null;
+      updateViewer();
     });
 
     branchSearchEl.addEventListener('input', function () {
