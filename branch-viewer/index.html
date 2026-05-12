@@ -395,9 +395,9 @@
     var allBranch = {
       id: 'view-all',
       label: 'View All',
-      people: [1, 2, 49, 50, 51, 52],
-      description: 'Show the full top-level family tree',
-      useAllRoots: true,
+      people: [],
+      description: 'Show the full connected family tree',
+      useUnifiedTree: true,
     };
 
     familyNodes.forEach(function (node) {
@@ -622,10 +622,8 @@
         return;
       }
 
-      var roots = branch.useAllRoots
-        ? majorRoots.map(function (item) {
-            return buildCoupleTree(item.people.slice(), new Set());
-          }).filter(Boolean)
+      var roots = branch.useUnifiedTree
+        ? [buildCoupleTree([51, 52], new Set())].filter(Boolean)
         : [buildCoupleTree(branch.people.slice(), new Set())].filter(Boolean);
 
       if (!roots.length) {
