@@ -283,6 +283,10 @@
       transform: translateY(-1.5px);
     }
 
+    .person-group.synthetic-root {
+      display: none;
+    }
+
     .node-card {
       width: var(--tree-card-width);
       padding: 14px 14px 12px;
@@ -471,6 +475,65 @@
       return Array.isArray(node.pids) ? node.pids : [];
     }
 
+    function hasParents(nodeId) {
+      var node = nodesById.get(nodeId);
+      return !!(node && (node.fid != null || node.mid != null));
+    }
+
+    function inferredPartnerIds(nodeId) {
+      var node = nodesById.get(nodeId);
+      if (!node) {
+        return [];
+      }
+
+      var found = new Set(spouseIds(node));
+      familyNodes.forEach(function (child) {
+        if (child.fid === nodeId && child.mid != null) {
+          found.add(child.mid);
+        }
+        if (child.mid === nodeId && child.fid != null) {
+          found.add(child.fid);
+        }
+      });
+
+      found.delete(nodeId);
+      return Array.from(found);
+    }
+
+    function rootFamilies() {
+      var candidates = familyNodes.filter(function (node) {
+        return node.fid == null && node.mid == null;
+      });
+      var candidateIds = new Set(candidates.map(function (node) { return node.id; }));
+      var excluded = new Set();
+
+      candidates.forEach(function (node) {
+        var partners = inferredPartnerIds(node.id);
+        if (partners.some(function (partnerId) { return hasParents(partnerId); })) {
+          excluded.add(node.id);
+        }
+      });
+
+      var seen = new Set();
+      var families = [];
+
+      candidates.forEach(function (node) {
+        if (excluded.has(node.id) || seen.has(node.id)) {
+          return;
+        }
+
+        var partners = inferredPartnerIds(node.id).filter(function (partnerId) {
+          return candidateIds.has(partnerId) && !excluded.has(partnerId);
+        });
+
+        var family = [node.id].concat(partners).sort(function (a, b) { return a - b; });
+        family.forEach(function (id) { seen.add(id); });
+        families.push(family);
+      });
+
+      return families;
+    }
+
     function formatName(node) {
       return node ? node.name : 'Unknown';
     }
@@ -644,11 +707,15 @@
     function renderNode(treeNode) {
       var li = document.createElement('li');
       var group = document.createElement('div');
-      group.className = 'person-group' + (treeNode.partnerIds.length ? ' has-spouse' : '');
-      group.appendChild(renderCard(treeNode.personId));
-      treeNode.partnerIds.forEach(function (partnerId) {
-        group.appendChild(renderCard(partnerId));
-      });
+      group.className = 'person-group' + (treeNode.partnerIds.length ? ' has-spouse' : '') + (treeNode.synthetic ? ' synthetic-root' : '');
+
+      if (!treeNode.synthetic) {
+        group.appendChild(renderCard(treeNode.personId));
+        treeNode.partnerIds.forEach(function (partnerId) {
+          group.appendChild(renderCard(partnerId));
+        });
+      }
+
       li.appendChild(group);
 
       if (treeNode.children && treeNode.children.length) {
@@ -670,9 +737,22 @@
         return;
       }
 
-      var branchRootId = currentRootId != null ? currentRootId : branch.people[0];
-      var branchPartnerId = branch.people[1] || null;
-      var roots = [buildPersonTree(branchRootId, branchPartnerId, new Set())].filter(Boolean);
+      var roots;
+      if (branch.id === 'view-all' && currentRootId == null) {
+        roots = [{
+          key: 'synthetic-root',
+          synthetic: true,
+          personId: null,
+          partnerIds: [],
+          children: rootFamilies().map(function (family) {
+            return buildPersonTree(family[0], family[1] || null, new Set());
+          }).filter(Boolean),
+        }];
+      } else {
+        var branchRootId = currentRootId != null ? currentRootId : branch.people[0];
+        var branchPartnerId = branch.people[1] || inferredPartnerIds(branchRootId)[0] || null;
+        roots = [buildPersonTree(branchRootId, branchPartnerId, new Set())].filter(Boolean);
+      }
 
       if (!roots.length) {
         treeRootEl.innerHTML = '<div class="empty">This branch could not be rendered.</div>';
@@ -703,7 +783,7 @@
         button.className = 'branch-button' + (branch.id === activeBranchId ? ' active' : '');
         button.addEventListener('click', function () {
           activeBranchId = branch.id;
-          currentRootId = branch.people[0];
+          currentRootId = branch.id === 'view-all' ? null : branch.people[0];
           focusHistory = [];
           updateViewer();
         });
@@ -742,7 +822,11 @@
       }
 
       var rootData = personCardData(currentRootId != null ? currentRootId : branch.people[0]);
-      if (currentRootId != null && currentRootId !== branch.people[0]) {
+      if (branch.id === 'view-all' && currentRootId == null) {
+        viewerTitleEl.textContent = branch.label;
+        viewerDescriptionEl.textContent = 'Showing the full connected family tree from all top ancestor families. Click any person card to focus on that subtree.';
+        backOutEl.hidden = true;
+      } else if (currentRootId != null && currentRootId !== branch.people[0]) {
         viewerTitleEl.textContent = rootData.name;
         viewerDescriptionEl.textContent = 'Showing this person, their spouse connections, and descendants inside the ' + branch.label + ' branch.';
         backOutEl.hidden = false;
@@ -776,17 +860,19 @@
 
     viewAllButtonEl.addEventListener('click', function () {
       activeBranchId = 'view-all';
-      currentRootId = allBranch.people[0];
+      currentRootId = null;
       focusHistory = [];
       updateViewer();
     });
 
     backOutEl.addEventListener('click', function () {
-      currentRootId = focusHistory.length ? focusHistory.pop() : activeBranch().people[0];
+      currentRootId = focusHistory.length
+        ? focusHistory.pop()
+        : (activeBranch().id === 'view-all' ? null : activeBranch().people[0]);
       updateViewer();
     });
 
-    currentRootId = allBranch.people[0];
+    currentRootId = null;
     branchSearchEl.addEventListener('input', function () {
       renderBranchList(branchSearchEl.value);
     });
