@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Family Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --panel-alt: #fbfcfd;
+      --border: #d8dde5;
+      --text: #1f2933;
+      --muted: #667085;
+      --link: #1d56b3;
+      --accent: #d8ecff;
+      --accent-border: #89bfff;
+      --shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+      --badge-bg: #eef4ff;
+      --badge-text: #174b8a;
+      --badge-muted-bg: #f1f3f5;
+      --badge-muted-text: #5d6673;
+      --warn-bg: #fff5dd;
+      --warn-text: #825500;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color: var(--text);
+      font-family: "Oxygen", sans-serif;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    .hero {
+      margin-bottom: 20px;
+      padding: 26px 24px 22px;
+      border: 1px solid rgba(137, 191, 255, 0.35);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top left, rgba(137, 191, 255, 0.28), transparent 36%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 253, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      max-width: 720px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 12px 16px;
+      background: #ffffff;
+      font: inherit;
+      color: var(--text);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .toolbar button {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: #ffffff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .toolbar button:hover {
+      border-color: var(--accent-border);
+      color: var(--link);
+    }
+
+    .status {
+      margin: 14px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .explorer {
+      display: grid;
+      gap: 14px;
+    }
+
+    .branch {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .branch > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: linear-gradient(180deg, #ffffff, #fbfcfe);
+    }
+
+    .branch > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .branch-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .branch-chevron {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: var(--muted);
+      transition: transform 140ms ease;
+    }
+
+    details[open] > summary .branch-chevron {
+      transform: rotate(90deg);
+    }
+
+    .branch-name {
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .branch-meta {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .branch-body {
+      padding: 6px 14px 16px;
+      background: var(--panel-alt);
+    }
+
+    .node-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .person-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .person-card.linked {
+      border-color: var(--accent-border);
+      box-shadow: inset 0 0 0 1px rgba(137, 191, 255, 0.28);
+    }
+
+    .person-card.matched {
+      border-color: #f0b429;
+      box-shadow: inset 0 0 0 1px rgba(240, 180, 41, 0.26);
+    }
+
+    .person-card > summary {
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      padding: 14px 16px;
+    }
+
+    .person-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .person-main {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .person-line {
+      font-size: 22px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .person-line a {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .person-line a:hover {
+      text-decoration: underline;
+    }
+
+    .person-note {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--warn-text);
+      background: var(--warn-bg);
+      border-radius: 999px;
+      display: inline-flex;
+      padding: 5px 9px;
+    }
+
+    .person-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+    }
+
+    .badge.muted {
+      background: var(--badge-muted-bg);
+      color: var(--badge-muted-text);
+    }
+
+    .summary-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .desc-count {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .toggle-pill {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: transform 140ms ease;
+    }
+
+    details[open] > summary .toggle-pill {
+      transform: rotate(45deg);
+    }
+
+    .children {
+      padding: 0 16px 16px 28px;
+      border-left: 2px solid #e9eef5;
+      margin: 0 16px 16px;
+    }
+
+    .children > .node-list {
+      position: relative;
+    }
+
+    .children > .node-list::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -16px;
+      width: 0;
+      border-left: 1px dashed #d4dde8;
+    }
+
+    .empty {
+      padding: 28px 18px;
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: 12px 10px 32px;
+      }
+
+      .hero {
+        padding: 20px 16px 18px;
+        border-radius: 20px;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .branch > summary,
+      .person-card > summary {
+        padding: 14px;
+      }
+
+      .branch-name {
+        font-size: 18px;
+      }
+
+      .person-line {
+        font-size: 18px;
+      }
+
+      .children {
+        padding: 0 12px 12px 18px;
+        margin: 0 12px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Family Explorer</h1>
+      <p>An expandable family view that keeps the relationships readable. Open only the branch you want, search for a person, and follow links out to each profile page.</p>
+      <div class="toolbar">
+        <input id="search-input" class="search" type="search" placeholder="Search people, couples, or branches">
+        <button id="expand-all" type="button">Expand All</button>
+        <button id="collapse-all" type="button">Collapse All</button>
+      </div>
+      <div id="status" class="status">Showing the full family explorer.</div>
+    </section>
+
+    <div id="explorer" class="explorer"></div>
+  </div>
+
+  <script>
+    function personPage(fileName, label) {
+      return '<a href="../' + fileName + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+    }
+
+    function badge(label, muted) {
+      return { label: label, muted: !!muted };
+    }
+
+    function flagBadge(symbol, label) {
+      return { label: symbol, title: label, muted: false };
+    }
+
+    var treeData = [
+      {
+        lines: ['Davidowitz &amp; Herskowitz Family Tree'],
+        note: 'Combined branches from both family trees',
+        children: [
+          {
+            lines: ['Moshe Moscovics'],
+            children: [
+              {
+                lines: [
+                  personPage('mechelDavidowitz.html', 'Mechel') + ' &amp; ' + personPage('tziporaDavidowitz.html', 'Tziporah') + ' (Moskovics)'
+                ],
+                children: [
+                  { lines: [personPage('shlomoDavidowitz.html', 'Shlomo')], badges: [badge('Deceased', true)] },
+                  {
+                    lines: [personPage('avrohamDavidowitz.html', 'Avroham')],
+                    children: [{ lines: ['Tziporah'] }, { lines: ['Micha'] }]
+                  },
+                  {
+                    lines: [personPage('peppiDavidowitz.html', 'Pesil')],
+                    children: [
+                      { lines: ['Shmuel'] },
+                      { lines: ['Isaac'] },
+                      { lines: ['Tziporah'] },
+                      { lines: ['Chana Feiga'] },
+                      { lines: ['Golda'] },
+                      { lines: ['Michael'] }
+                    ]
+                  },
+                  { lines: [personPage('szerenaDavidowitz.html', 'Szerena (Sarah)')] },
+                  { lines: [personPage('isaacDavidowitzBenMechel.html', 'Isaac')] },
+                  { lines: [personPage('estherDavidowitz.html', 'Esther')] },
+                  { lines: [personPage('suriDavidowitzBasMechel.html', 'Suri')] },
+                  {
+                    lines: [personPage('etelDavidowitz.html', 'Etel')],
+                    badges: [badge('Deceased', true)],
+                    children: [
+                      { lines: ['Mechel'] },
+                      { lines: ['Isaac'] },
+                      { lines: ['Shmuel'] },
+                      { lines: ['Avroham Yehuda'] }
+                    ]
+                  },
+                  {
+                    lines: [personPage('moshe.html', 'Moshe') + ' &amp; ' + personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')],
+                    linked: true,
+                    children: [
+                      { lines: [personPage('srulDavidowitz.html', 'Srul')] },
+                      { lines: [personPage('danielDavidowitz.html', 'Daniel')] },
+                      { lines: [personPage('shmuelDavidowitz.html', 'Shmuel')] },
+                      {
+                        lines: [personPage('zaidy.html', 'Irving') + ' &amp; ' + personPage('bubby.html', 'Sarah')],
+                        linked: true,
+                        children: [
+                          { lines: [personPage('fredDavidowitz.html', 'Fred')], badges: [flagBadge('🇺🇸', 'United States')] },
+                          { lines: [personPage('morrisDavidowitz.html', 'Morris')], badges: [flagBadge('🇺🇸', 'United States')] },
+                          { lines: ['Tzvi'], badges: [flagBadge('🇺🇸', 'United States')] }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    lines: ['Moshe &amp; ' + personPage('miriamDavidowitz.html', 'Miriam')],
+                    children: [
+                      { lines: ['Izzy'] },
+                      { lines: [personPage('ceilDavidowitz.html', 'Ceil')] },
+                      { lines: [personPage('mitchDavidowitz.html', 'Mitch')] }
+                    ]
+                  }
+                ]
+              },
+              {
+                lines: ['Leib (Leba) Herskovics'],
+                children: [
+                  { lines: [personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')], linked: true, note: 'duplicate' }
+                ]
+              },
+              {
+                lines: ['Shmuel Klein &amp; Leni (nee Herschkovics)'],
+                children: [
+                  {
+                    lines: [personPage('poliKlein.html', 'Poli (Toli) Herskovics (nee Klein)')],
+                    children: [
+                      { lines: [personPage('rivkahDavidowitz.html', 'Rivkah (Regina)')], linked: true, note: 'duplicate' },
+                      { lines: ['Eizik Herskovics'] },
+                      { lines: ['Beniamin Herskovics'] },
+                      { lines: ['Eszter Herskovics'] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            lines: [personPage('mordechaiLebovics.html', 'Mordechai') + ' &amp; Devorah (Dora nee Lebovics) Farkas'],
+            children: [
+              {
+                lines: [personPage('FaigaGoldinger.html', 'Feiga') + ' &amp; ' + personPage('ShalomYosefGoldinger.html', 'Shalom Yosef Goldinger')],
+                badges: [badge('Deceased', true)],
+                children: [
+                  { lines: ['Rivkah Fleisher'], children: [{ lines: ['Freida Riven'], badges: [flagBadge('🇺🇸', 'United States')] }] },
+                  { lines: ['Tzvi Yechiel'], badges: [badge('Deceased', true)] },
+                  { lines: ['Ita'], badges: [badge('Deceased', true)] },
+                  { lines: ['Leah'], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('mordechaiGoldinger.html', 'Mordechai')], badges: [badge('Deceased', true)] }
+                ]
+              },
+              {
+                lines: [personPage('breinaAroni.html', 'Breina (Bertha)') + ' &amp; ' + personPage('yosefAroni.html', 'Yosef') + ' Aroni'],
+                badges: [badge('Deceased', true)],
+                children: [
+                  {
+                    lines: [personPage('henrikAron.html', 'Henrik (Yechezkel)')],
+                    children: [
+                      { lines: ['Benni'], badges: [flagBadge('🇦🇺', 'Australia')] },
+                      { lines: ['Eve Fried'], badges: [flagBadge('🇦🇺', 'Australia')] }
+                    ]
+                  },
+                  { lines: ['Tzvi'], children: [{ lines: ['Chaim'], badges: [flagBadge('🇮🇱', 'Israel')] }] },
+                  { lines: [personPage('MordechaiAron.html', 'Mordechai (Marton)')], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('eliasAroni.html', 'Elias')], badges: [badge('Deceased', true)] },
+                  { lines: ['Chaim Aryeh (Herman)'], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('malkaAron.html', 'Malka (Margit)')], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('fredaAroni.html', 'Frieda')], badges: [badge('Deceased', true)] }
+                ]
+              },
+              {
+                lines: [personPage('freidahershkowitz.html', 'Freida (Farkas)') + ' &amp; ' + personPage('efraimhershkowitz.html', 'Froim')],
+                linked: true,
+                badges: [badge('Deceased', true)],
+                children: [
+                  {
+                    lines: [personPage('bubby.html', 'Sarah') + ' &amp; ' + personPage('zaidy.html', 'Irving')],
+                    linked: true,
+                    children: [
+                      { lines: [personPage('fredDavidowitz.html', 'Fred')], badges: [flagBadge('🇺🇸', 'United States')] },
+                      { lines: [personPage('morrisDavidowitz.html', 'Morris')], badges: [flagBadge('🇺🇸', 'United States')] },
+                      { lines: ['Tzvi'], badges: [flagBadge('🇺🇸', 'United States')] }
+                    ]
+                  },
+                  { lines: [personPage('chayaHershkowitz.html', 'Chaya')], children: [{ lines: ['Fred'], badges: [flagBadge('🇺🇸', 'United States')] }] },
+                  { lines: [personPage('malkaHershkowitz.html', 'Malka')], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('branaHerskovics.html', 'Brana Moskovics')], children: [{ lines: [personPage('jacobMoskovics.html', 'Jacob Moskovics')] }] },
+                  { lines: [personPage('chaimHerskowitz.html', 'Chaim')] },
+                  { lines: [personPage('mordechaiHerskowitz.html', 'Mordechai (Marton)')] },
+                  { lines: [personPage('irvingHerskowitz.html', 'Irving')], linked: true, note: 'duplicate' },
+                  { lines: [personPage('leahhershkowitz.html', 'Leah')], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('hershmeilichhershkowitz.html', 'Hersh Meilich')], badges: [badge('Deceased', true)] },
+                  { lines: [personPage('yechezkelhershkowitz.html', 'Yechezkel')] }
+                ]
+              },
+              { lines: [personPage('saraFarkas.html', 'Sarah')], badges: [badge('Deceased', true)] }
+            ]
+          },
+          {
+            lines: ['Meir &amp; Fischel (nee Jakobovics) Herskovics'],
+            children: [
+              { lines: [personPage('efraimhershkowitz.html', 'Froim')], linked: true, badges: [badge('Deceased', true)], note: 'duplicate' },
+              { lines: [personPage('shmuelHershkowitz.html', 'Shmuel')] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    var explorerEl = document.getElementById('explorer');
+    var searchInputEl = document.getElementById('search-input');
+    var statusEl = document.getElementById('status');
+
+    function plainText(value) {
+      var temp = document.createElement('div');
+      temp.innerHTML = value;
+      return temp.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function nodeLabel(node) {
+      return (node.lines || []).map(plainText).join(' / ');
+    }
+
+    function descendantCount(node) {
+      if (!node.children || !node.children.length) {
+        return 0;
+      }
+
+      var total = node.children.length;
+      node.children.forEach(function (child) {
+        total += descendantCount(child);
+      });
+      return total;
+    }
+
+    function enrichNodes(nodes, parentId) {
+      nodes.forEach(function (node, index) {
+        node.id = node.id || 'node-' + parentId + '-' + index;
+        node.label = nodeLabel(node);
+        node.searchText = [
+          node.label,
+          node.note || '',
+          (node.badges || []).map(function (item) { return item.title || item.label; }).join(' ')
+        ].join(' ').toLowerCase();
+        node.descendants = descendantCount(node);
+        if (node.children && node.children.length) {
+          enrichNodes(node.children, node.id);
+        }
+      });
+    }
+
+    enrichNodes(treeData, 'root');
+
+    function createBadgeEl(item) {
+      var badgeEl = document.createElement('span');
+      badgeEl.className = 'badge' + (item.muted ? ' muted' : '');
+      badgeEl.textContent = item.label;
+      if (item.title) {
+        badgeEl.title = item.title;
+        badgeEl.setAttribute('aria-label', item.title);
+      }
+      return badgeEl;
+    }
+
+    function hasMatch(node, query) {
+      if (!query) {
+        return true;
+      }
+      if (node.searchText.indexOf(query) !== -1) {
+        return true;
+      }
+      return !!(node.children || []).find(function (child) {
+        return hasMatch(child, query);
+      });
+    }
+
+    function buildPersonNode(node, query, depth) {
+      if (!hasMatch(node, query)) {
+        return null;
+      }
+
+      var hasChildren = !!(node.children && node.children.length);
+      var card = document.createElement(hasChildren ? 'details' : 'div');
+      card.className = 'person-card' + (node.linked ? ' linked' : '') + (query && node.searchText.indexOf(query) !== -1 ? ' matched' : '');
+      var summary = document.createElement(hasChildren ? 'summary' : 'div');
+      var main = document.createElement('div');
+      main.className = 'person-main';
+
+      (node.lines || []).forEach(function (line) {
+        var lineEl = document.createElement('div');
+        lineEl.className = 'person-line';
+        lineEl.innerHTML = line;
+        main.appendChild(lineEl);
+      });
+
+      if (node.note) {
+        var noteEl = document.createElement('div');
+        noteEl.className = 'person-note';
+        noteEl.textContent = node.note;
+        main.appendChild(noteEl);
+      }
+
+      if (node.badges && node.badges.length) {
+        var badgeWrap = document.createElement('div');
+        badgeWrap.className = 'person-badges';
+        node.badges.forEach(function (item) {
+          badgeWrap.appendChild(createBadgeEl(item));
+        });
+        main.appendChild(badgeWrap);
+      }
+
+      var tools = document.createElement('div');
+      tools.className = 'summary-tools';
+
+      if (node.descendants) {
+        var countEl = document.createElement('div');
+        countEl.className = 'desc-count';
+        countEl.textContent = node.descendants + ' below';
+        tools.appendChild(countEl);
+      }
+
+      if (hasChildren) {
+        var toggleEl = document.createElement('div');
+        toggleEl.className = 'toggle-pill';
+        toggleEl.textContent = '+';
+        tools.appendChild(toggleEl);
+      }
+
+      summary.appendChild(main);
+      summary.appendChild(tools);
+      card.appendChild(summary);
+
+      var shouldOpen = depth < 1 || !!query;
+      if (hasChildren && shouldOpen) {
+        card.open = true;
+      }
+
+      if (hasChildren) {
+        var childrenWrap = document.createElement('div');
+        childrenWrap.className = 'children';
+        var list = document.createElement('div');
+        list.className = 'node-list';
+
+        node.children.forEach(function (child) {
+          var childEl = buildPersonNode(child, query, depth + 1);
+          if (childEl) {
+            list.appendChild(childEl);
+          }
+        });
+
+        childrenWrap.appendChild(list);
+        card.appendChild(childrenWrap);
+      }
+
+      return card;
+    }
+
+    function buildBranch(node, query) {
+      if (!hasMatch(node, query)) {
+        return null;
+      }
+
+      var details = document.createElement('details');
+      details.className = 'branch';
+      details.open = true;
+
+      var summary = document.createElement('summary');
+      var titleWrap = document.createElement('div');
+      titleWrap.className = 'branch-title';
+      var chevron = document.createElement('div');
+      chevron.className = 'branch-chevron';
+      chevron.textContent = '›';
+
+      var copyWrap = document.createElement('div');
+      var nameEl = document.createElement('div');
+      nameEl.className = 'branch-name';
+      nameEl.textContent = node.label;
+      copyWrap.appendChild(nameEl);
+
+      var metaEl = document.createElement('div');
+      metaEl.className = 'branch-meta';
+      metaEl.textContent = node.note || (node.descendants ? node.descendants + ' people in this branch' : 'Family branch');
+      copyWrap.appendChild(metaEl);
+
+      titleWrap.appendChild(chevron);
+      titleWrap.appendChild(copyWrap);
+      summary.appendChild(titleWrap);
+
+      var rightMeta = document.createElement('div');
+      rightMeta.className = 'desc-count';
+      rightMeta.textContent = node.children && node.children.length ? node.children.length + ' immediate branches' : '';
+      summary.appendChild(rightMeta);
+      details.appendChild(summary);
+
+      var body = document.createElement('div');
+      body.className = 'branch-body';
+      var list = document.createElement('div');
+      list.className = 'node-list';
+
+      (node.children || []).forEach(function (child) {
+        var childEl = buildPersonNode(child, query, 0);
+        if (childEl) {
+          list.appendChild(childEl);
+        }
+      });
+
+      if (!list.children.length) {
+        var empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No matching people in this branch.';
+        body.appendChild(empty);
+      } else {
+        body.appendChild(list);
+      }
+
+      details.appendChild(body);
+      return details;
+    }
+
+    function renderExplorer(query) {
+      explorerEl.innerHTML = '';
+      var normalized = (query || '').trim().toLowerCase();
+      var root = treeData[0];
+      var renderedCount = 0;
+
+      (root.children || []).forEach(function (branch) {
+        var branchEl = buildBranch(branch, normalized);
+        if (branchEl) {
+          explorerEl.appendChild(branchEl);
+          renderedCount += 1;
+        }
+      });
+
+      if (!renderedCount) {
+        var empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No people matched that search.';
+        explorerEl.appendChild(empty);
+      }
+
+      statusEl.textContent = normalized
+        ? 'Filtering the explorer for "' + query.trim() + '".'
+        : 'Showing the full family explorer.';
+    }
+
+    function setAllDetails(open) {
+      explorerEl.querySelectorAll('details').forEach(function (node) {
+        node.open = open;
+      });
+    }
+
+    document.getElementById('expand-all').addEventListener('click', function () {
+      setAllDetails(true);
+    });
+
+    document.getElementById('collapse-all').addEventListener('click', function () {
+      explorerEl.querySelectorAll('.person-card').forEach(function (node) {
+        node.open = false;
+      });
+      explorerEl.querySelectorAll('.branch').forEach(function (node) {
+        node.open = true;
+      });
+    });
+
+    searchInputEl.addEventListener('input', function () {
+      renderExplorer(searchInputEl.value);
+    });
+
+    renderExplorer('');
+  </script>
+</body>
+</html>
