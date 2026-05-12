@@ -448,6 +448,17 @@
         .map(function (id) { return nodesById.get(id); })
         .filter(Boolean);
 
+      if (!people.length) {
+        return {
+          title: 'Complete Family Tree',
+          meta: ['All connected branches'],
+          linked: false,
+          deceased: false,
+          flag: '',
+          href: '',
+        };
+      }
+
       var primary = people[0];
       var isLinked = people.some(function (person) {
         return (person.pids || []).some(function (pid) {
@@ -623,7 +634,13 @@
       }
 
       var roots = branch.useUnifiedTree
-        ? [buildCoupleTree([51, 52], new Set())].filter(Boolean)
+        ? [{
+            key: 'all-root',
+            people: [],
+            children: majorRoots.map(function (item) {
+              return buildCoupleTree(item.people.slice(), new Set());
+            }).filter(Boolean),
+          }]
         : [buildCoupleTree(branch.people.slice(), new Set())].filter(Boolean);
 
       if (!roots.length) {
