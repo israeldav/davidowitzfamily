@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Family Branch Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f9fbff;
+      --border: #d6deeb;
+      --line: #f0579c;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --link: #1d4ed8;
+      --accent: #ffbd3a;
+      --accent-text: #1f3a8a;
+      --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --tree-card-width: 220px;
+      --tree-x-gap: 18px;
+      --tree-y-gap: 42px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Oxygen", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 189, 58, 0.12), transparent 26%),
+        linear-gradient(180deg, #fafcff 0%, #eef3f9 100%);
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+
+    .hero {
+      border: 1px solid rgba(240, 87, 156, 0.16);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(240, 87, 156, 0.10), transparent 28%),
+        radial-gradient(circle at top left, rgba(255, 189, 58, 0.16), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98));
+      box-shadow: var(--shadow);
+      padding: 28px 24px 22px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 56px);
+      line-height: 1.02;
+      color: #1e3f95;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      max-width: 760px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .viewer-panel {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 14px;
+    }
+
+    .sidebar-head,
+    .viewer-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid #edf2f7;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    .sidebar-head h2,
+    .viewer-head h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .sidebar-head p,
+    .viewer-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .branch-search {
+      width: 100%;
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font: inherit;
+    }
+
+    .branch-list {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      max-height: 72vh;
+      overflow: auto;
+    }
+
+    .branch-button {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      color: inherit;
+      text-align: left;
+      padding: 14px 14px 12px;
+      cursor: pointer;
+      transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .branch-button:hover {
+      transform: translateY(-1px);
+      border-color: #f4a5c8;
+      box-shadow: 0 10px 22px rgba(240, 87, 156, 0.09);
+    }
+
+    .branch-button.active {
+      border-color: #f0579c;
+      box-shadow: inset 0 0 0 1px rgba(240, 87, 156, 0.16);
+      background: linear-gradient(180deg, #ffffff, #fff8fc);
+    }
+
+    .branch-button-title {
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #1e3f95;
+    }
+
+    .branch-button-meta {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .viewer-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .viewer-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .viewer-tools button {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #ffffff;
+      color: inherit;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .viewer-tools button:hover {
+      border-color: #f4a5c8;
+      color: #c72e7a;
+    }
+
+    .tree-wrap {
+      padding: 18px 18px 26px;
+      overflow: auto;
+      background-image: radial-gradient(#d8dee9 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .tree-stage {
+      width: max-content;
+      min-width: 100%;
+      transform-origin: top left;
+      transition: transform 140ms ease;
+    }
+
+    .tree {
+      display: inline-block;
+      padding: 8px 10px 14px;
+    }
+
+    .tree,
+    .tree ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tree ul {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding-top: var(--tree-y-gap);
+    }
+
+    .tree li {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: var(--tree-card-width);
+      padding: 0 calc(var(--tree-x-gap) / 2);
+      text-align: center;
+    }
+
+    .tree ul::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 24px;
+      border-left: 3px solid var(--line);
+      transform: translateX(-1.5px);
+    }
+
+    .tree li::before,
+    .tree li::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 24px;
+      border-top: 3px solid var(--line);
+    }
+
+    .tree li::before {
+      right: 50%;
+    }
+
+    .tree li::after {
+      left: 50%;
+      border-left: 3px solid var(--line);
+    }
+
+    .tree li:only-child::before,
+    .tree li:only-child::after {
+      display: none;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+      border-top: 0;
+    }
+
+    .tree li:last-child::before {
+      border-right: 3px solid var(--line);
+      border-radius: 0 10px 0 0;
+    }
+
+    .tree li:first-child::after {
+      border-radius: 10px 0 0 0;
+    }
+
+    .node-card {
+      width: var(--tree-card-width);
+      padding: 14px 14px 12px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: var(--accent-text);
+      box-shadow: 6px 7px 0 rgba(32, 47, 70, 0.08);
+      border: 2px solid rgba(17, 24, 39, 0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .node-card.linked {
+      background: #d7ecff;
+    }
+
+    .node-card.deceased {
+      background: #ffe2e6;
+      color: #8b2f3b;
+    }
+
+    .node-name {
+      font-size: 21px;
+      line-height: 1.18;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .node-name a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .node-name a:hover {
+      text-decoration: underline;
+    }
+
+    .node-meta {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .node-meta span + span::before {
+      content: " | ";
+    }
+
+    .node-flag {
+      margin-top: 8px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .empty {
+      padding: 48px 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Family Branch Viewer</h1>
+      <p>Pick a major family root or couple, then view that branch on its own in a cleaner descendant chart. The data stays editable in one simple `nodes` file.</p>
+    </section>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <h2>Major Roots</h2>
+          <p>Start with a family couple or root branch instead of scrolling one huge tree.</p>
+          <input id="branch-search" class="branch-search" type="search" placeholder="Find a branch">
+        </div>
+        <div id="branch-list" class="branch-list"></div>
+      </aside>
+
+      <section class="viewer-panel">
+        <div class="viewer-head">
+          <div>
+            <h2 id="viewer-title">Select a branch</h2>
+            <p id="viewer-description">Choose one of the major roots on the left to focus the tree.</p>
+          </div>
+          <div class="viewer-tools">
+            <button id="zoom-out" type="button">-</button>
+            <button id="zoom-reset" type="button">100%</button>
+            <button id="zoom-in" type="button">+</button>
+          </div>
+        </div>
+        <div class="tree-wrap">
+          <div id="tree-stage" class="tree-stage">
+            <div id="tree-root"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="../family-data.js"></script>
+  <script>
+    var familyNodes = window.familyData.nodes;
+    var majorRoots = window.familyData.majorRoots;
+    var profileMap = window.familyData.profiles || {};
+    var nodesById = new Map();
+    var childrenByParent = new Map();
+    var branchListEl = document.getElementById('branch-list');
+    var branchSearchEl = document.getElementById('branch-search');
+    var viewerTitleEl = document.getElementById('viewer-title');
+    var viewerDescriptionEl = document.getElementById('viewer-description');
+    var treeRootEl = document.getElementById('tree-root');
+    var treeStageEl = document.getElementById('tree-stage');
+    var zoomResetEl = document.getElementById('zoom-reset');
+    var currentZoom = 1;
+    var activeBranchId = majorRoots[0] ? majorRoots[0].id : null;
+
+    familyNodes.forEach(function (node) {
+      nodesById.set(node.id, node);
+
+      if (node.fid != null) {
+        if (!childrenByParent.has(node.fid)) {
+          childrenByParent.set(node.fid, []);
+        }
+        childrenByParent.get(node.fid).push(node.id);
+      }
+
+      if (node.mid != null) {
+        if (!childrenByParent.has(node.mid)) {
+          childrenByParent.set(node.mid, []);
+        }
+        childrenByParent.get(node.mid).push(node.id);
+      }
+    });
+
+    function uniqueChildrenForPeople(ids) {
+      var found = new Set();
+      ids.forEach(function (id) {
+        (childrenByParent.get(id) || []).forEach(function (childId) {
+          found.add(childId);
+        });
+      });
+      return Array.from(found);
+    }
+
+    function spouseIds(node) {
+      return Array.isArray(node.pids) ? node.pids : [];
+    }
+
+    function formatName(node) {
+      return node ? node.name : 'Unknown';
+    }
+
+    function personHref(node) {
+      if (!node || !profileMap[node.id]) {
+        return '';
+      }
+      return '../' + profileMap[node.id];
+    }
+
+    function nodeCardData(personIds) {
+      var people = personIds
+        .map(function (id) { return nodesById.get(id); })
+        .filter(Boolean);
+
+      var primary = people[0];
+      var isLinked = people.some(function (person) {
+        return (person.pids || []).some(function (pid) {
+          return personIds.indexOf(pid) === -1;
+        });
+      });
+
+      var isDeceased = people.some(function (person) {
+        return !!person.died;
+      });
+
+      var title = people.map(function (person) {
+        var href = personHref(person);
+        if (!href) {
+          return formatName(person);
+        }
+        return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + formatName(person) + '</a>';
+      }).join(' &amp; ');
+
+      var meta = [];
+      if (primary && primary.born) {
+        meta.push('b. ' + primary.born);
+      }
+      if (primary && primary.married && people.length > 1) {
+        meta.push('m. ' + primary.married);
+      }
+      if (primary && primary.died) {
+        meta.push('d. ' + primary.died);
+      }
+
+      var flag = '';
+      var names = people.map(function (person) { return person.name; }).join(' ');
+      if (/Australia/.test(names)) {
+        flag = '🇦🇺';
+      } else if (/Israel/.test(names)) {
+        flag = '🇮🇱';
+      } else if (/Staten Island/.test(names)) {
+        flag = '🇺🇸';
+      }
+
+      return {
+        title: title,
+        meta: meta,
+        linked: isLinked,
+        deceased: isDeceased,
+        flag: flag,
+      };
+    }
+
+    function buildCoupleTree(personIds, seen) {
+      var dedupeKey = personIds.slice().sort(function (a, b) { return a - b; }).join('-');
+      if (seen.has(dedupeKey)) {
+        return null;
+      }
+      seen.add(dedupeKey);
+
+      var childIds = uniqueChildrenForPeople(personIds);
+      var children = childIds.map(function (childId) {
+        var child = nodesById.get(childId);
+        if (!child) {
+          return null;
+        }
+
+        var coupleIds = [child.id];
+        spouseIds(child).forEach(function (pid) {
+          if (coupleIds.indexOf(pid) === -1) {
+            coupleIds.push(pid);
+          }
+        });
+
+        return buildCoupleTree(coupleIds, seen);
+      }).filter(Boolean);
+
+      return {
+        people: personIds,
+        children: children,
+      };
+    }
+
+    function renderNode(treeNode) {
+      var li = document.createElement('li');
+      var cardData = nodeCardData(treeNode.people);
+      var card = document.createElement('div');
+      card.className = 'node-card' +
+        (cardData.linked ? ' linked' : '') +
+        (cardData.deceased ? ' deceased' : '');
+
+      var name = document.createElement('div');
+      name.className = 'node-name';
+      name.innerHTML = cardData.title;
+      card.appendChild(name);
+
+      if (cardData.meta.length) {
+        var meta = document.createElement('div');
+        meta.className = 'node-meta';
+        meta.innerHTML = cardData.meta.map(function (item) {
+          return '<span>' + item + '</span>';
+        }).join('');
+        card.appendChild(meta);
+      }
+
+      if (cardData.flag) {
+        var flag = document.createElement('div');
+        flag.className = 'node-flag';
+        flag.textContent = cardData.flag;
+        card.appendChild(flag);
+      }
+
+      li.appendChild(card);
+
+      if (treeNode.children && treeNode.children.length) {
+        var ul = document.createElement('ul');
+        treeNode.children.forEach(function (child) {
+          ul.appendChild(renderNode(child));
+        });
+        li.appendChild(ul);
+      }
+
+      return li;
+    }
+
+    function renderTree(branch) {
+      treeRootEl.innerHTML = '';
+
+      if (!branch) {
+        treeRootEl.innerHTML = '<div class="empty">No branch selected.</div>';
+        return;
+      }
+
+      var rootTree = buildCoupleTree(branch.people.slice(), new Set());
+      if (!rootTree) {
+        treeRootEl.innerHTML = '<div class="empty">This branch could not be rendered.</div>';
+        return;
+      }
+
+      var tree = document.createElement('ul');
+      tree.className = 'tree';
+      tree.appendChild(renderNode(rootTree));
+      treeRootEl.appendChild(tree);
+      applyZoom();
+    }
+
+    function renderBranchList(filterText) {
+      var filter = (filterText || '').trim().toLowerCase();
+      branchListEl.innerHTML = '';
+
+      majorRoots.forEach(function (branch) {
+        var haystack = (branch.label + ' ' + branch.description).toLowerCase();
+        if (filter && haystack.indexOf(filter) === -1) {
+          return;
+        }
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'branch-button' + (branch.id === activeBranchId ? ' active' : '');
+        button.addEventListener('click', function () {
+          activeBranchId = branch.id;
+          updateViewer();
+        });
+
+        var title = document.createElement('div');
+        title.className = 'branch-button-title';
+        title.textContent = branch.label;
+
+        var meta = document.createElement('div');
+        meta.className = 'branch-button-meta';
+        meta.textContent = branch.description;
+
+        button.appendChild(title);
+        button.appendChild(meta);
+        branchListEl.appendChild(button);
+      });
+    }
+
+    function activeBranch() {
+      return majorRoots.find(function (branch) {
+        return branch.id === activeBranchId;
+      }) || null;
+    }
+
+    function updateViewer() {
+      var branch = activeBranch();
+      renderBranchList(branchSearchEl.value);
+
+      if (!branch) {
+        viewerTitleEl.textContent = 'Select a branch';
+        viewerDescriptionEl.textContent = 'Choose one of the major roots on the left to focus the tree.';
+        renderTree(null);
+        return;
+      }
+
+      viewerTitleEl.textContent = branch.label;
+      viewerDescriptionEl.textContent = branch.description + '. This chart shows descendants from that root/couple only.';
+      renderTree(branch);
+    }
+
+    function applyZoom() {
+      treeStageEl.style.transform = 'scale(' + currentZoom + ')';
+      zoomResetEl.textContent = Math.round(currentZoom * 100) + '%';
+    }
+
+    document.getElementById('zoom-in').addEventListener('click', function () {
+      currentZoom = Math.min(1.6, currentZoom + 0.1);
+      applyZoom();
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', function () {
+      currentZoom = Math.max(0.45, currentZoom - 0.1);
+      applyZoom();
+    });
+
+    zoomResetEl.addEventListener('click', function () {
+      currentZoom = 1;
+      applyZoom();
+    });
+
+    branchSearchEl.addEventListener('input', function () {
+      renderBranchList(branchSearchEl.value);
+    });
+
+    updateViewer();
+  </script>
+</body>
+</html>
