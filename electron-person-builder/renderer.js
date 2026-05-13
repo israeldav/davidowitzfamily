@@ -46,7 +46,23 @@ function syncFolderNameFromTitle() {
   folderNameEl.value = slugFileName(pageTitleEl.value).replace(/\.html$/, "");
 }
 
-function createFactRow(label = "", value = "") {
+function moveFactRow(item, direction) {
+  const sibling =
+    direction < 0 ? item.previousElementSibling : item.nextElementSibling;
+
+  if (!sibling) {
+    return;
+  }
+
+  if (direction < 0) {
+    factListEl.insertBefore(item, sibling);
+    return;
+  }
+
+  factListEl.insertBefore(sibling, item);
+}
+
+function createFactRow(label = "", value = "", href = "") {
   const item = document.createElement("div");
   item.className = "item";
   item.innerHTML = `
@@ -57,11 +73,19 @@ function createFactRow(label = "", value = "") {
       </div>
       <div class="field">
         <label>Value</label>
-        <input type="text" class="fact-value" value="${value}" placeholder="Leib (Leba) or [Moshe](./moshe.html)">
+        <input type="text" class="fact-value" value="${value}" placeholder="Leib (Leba)">
       </div>
+      <div class="field">
+        <label>Value Link (Optional)</label>
+        <input type="text" class="fact-href" value="${href}" placeholder="./moshe.html or https://example.com">
+      </div>
+      <button type="button" class="move-up icon-button" title="Move up">↑</button>
+      <button type="button" class="move-down icon-button" title="Move down">↓</button>
       <button type="button" class="remove-row">Remove</button>
     </div>
   `;
+  item.querySelector(".move-up").addEventListener("click", () => moveFactRow(item, -1));
+  item.querySelector(".move-down").addEventListener("click", () => moveFactRow(item, 1));
   item.querySelector(".remove-row").addEventListener("click", () => item.remove());
   factListEl.appendChild(item);
 }
@@ -116,6 +140,7 @@ function collectFacts() {
   return Array.from(factListEl.querySelectorAll(".item")).map((item) => ({
     label: item.querySelector(".fact-label").value.trim(),
     value: item.querySelector(".fact-value").value.trim(),
+    href: item.querySelector(".fact-href").value.trim(),
   }));
 }
 
@@ -171,9 +196,9 @@ function fillSample() {
   factListEl.innerHTML = "";
   mediaListEl.innerHTML = "";
   createFactRow("b.", "Sep 1888");
-  createFactRow("Father", "Leib (Leba)");
-  createFactRow("Mother", "Poli (Toli) nee Klein");
-  createFactRow("Spouse", "[Moshe](./moshe.html)");
+  createFactRow("Father:", "Leib (Leba)");
+  createFactRow("Mother:", "Poli (Toli) nee Klein");
+  createFactRow("Spouse:", "Moshe", "./moshe.html");
   createFactRow("m.", "Dec 31, 1907");
   createFactRow("d.", "Jan 29, 1920 | Shevat 10");
   createFactRow("Buried", "");
@@ -181,9 +206,27 @@ function fillSample() {
   statusEl.textContent = "Sample fields loaded.";
 }
 
+function clearAll() {
+  pageTitleEl.value = "";
+  fileNameTouched = false;
+  folderNameTouched = false;
+  fileNameEl.value = "";
+  homeLinkEl.value = "./newTree.html";
+  folderNameEl.value = "";
+  factListEl.innerHTML = "";
+  mediaListEl.innerHTML = "";
+  outputEl.value = "";
+  statusEl.textContent = "All fields cleared.";
+  createFactRow("", "");
+  createMediaRow();
+  syncFileNameFromTitle();
+  syncFolderNameFromTitle();
+}
+
 document.getElementById("add-fact").addEventListener("click", () => createFactRow());
 document.getElementById("add-media").addEventListener("click", () => createMediaRow());
 document.getElementById("fill-sample").addEventListener("click", fillSample);
+document.getElementById("clear-all").addEventListener("click", clearAll);
 document.getElementById("create-page").addEventListener("click", createPage);
 document.getElementById("copy-html").addEventListener("click", copyHtml);
 pageTitleEl.addEventListener("input", () => {
@@ -198,9 +241,9 @@ folderNameEl.addEventListener("input", () => {
 });
 
 createFactRow("b.", "");
-createFactRow("Father", "");
-createFactRow("Mother", "");
-createFactRow("Spouse", "");
+createFactRow("Father:", "");
+createFactRow("Mother:", "");
+createFactRow("Spouse:", "");
 createMediaRow();
 syncFileNameFromTitle();
 syncFolderNameFromTitle();

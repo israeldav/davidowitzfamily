@@ -119,7 +119,7 @@
 
     .fact-grid {
       display: grid;
-      grid-template-columns: 180px minmax(0, 1fr) auto;
+      grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr) auto auto auto;
       gap: 10px;
       align-items: end;
     }
@@ -160,6 +160,12 @@
       border-color: var(--accent);
       background: var(--accent);
       color: #fff;
+    }
+
+    .icon-button {
+      min-width: 46px;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .status {
@@ -221,6 +227,7 @@
           <button id="add-fact" class="primary" type="button">Add Fact Row</button>
           <button id="add-media" type="button">Add Media Row</button>
           <button id="fill-sample" type="button">Fill Sample</button>
+          <button id="clear-all" type="button">Clear All</button>
         </div>
       </div>
     </section>
@@ -228,7 +235,7 @@
     <section class="panel">
       <div class="head">
         <h2>Facts</h2>
-        <p>Free text only. Add as many rows as you want.</p>
+        <p>Free text only. Add as many rows as you want, reorder them, and optionally add a link to the value.</p>
       </div>
       <div class="body">
         <div id="fact-list" class="list"></div>

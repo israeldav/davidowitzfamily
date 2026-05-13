@@ -66,23 +66,35 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
-function linkifyValue(value) {
-  return escapeHtml(value).replace(
+function linkifyValue(value, href = "") {
+  const linkedValue = escapeHtml(value).replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2">$1</a>'
   );
+
+  if (!href || !value) {
+    return linkedValue;
+  }
+
+  return `<a href="${escapeHtml(href)}">${linkedValue}</a>`;
 }
 
 function renderFacts(facts) {
   return facts
-    .filter((fact) => fact.label || fact.value)
+    .filter((fact) => fact.label || fact.value || fact.href)
     .map((fact) => {
-      if (fact.label) {
-        return `          <li>${escapeHtml(fact.label)}: ${linkifyValue(
-          fact.value || ""
-        )}</li>`;
+      const label = escapeHtml(fact.label || "");
+      const value = linkifyValue(fact.value || "", fact.href || "");
+
+      if (fact.label && fact.value) {
+        return `          <li>${label} ${value}</li>`;
       }
-      return `          <li>${linkifyValue(fact.value || "")}</li>`;
+
+      if (fact.label) {
+        return `          <li>${label}</li>`;
+      }
+
+      return `          <li>${value}</li>`;
     })
     .join("\n");
 }
