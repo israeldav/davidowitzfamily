@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Family Person Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --border: #d7dfeb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #f0579c;
+      --shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px 16px 40px;
+      background: linear-gradient(180deg, #fafcff 0%, #eef3f9 100%);
+      color: var(--text);
+      font-family: "Oxygen", sans-serif;
+    }
+
+    .page {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .head {
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid #edf2f7;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    .head h1,
+    .head h2 {
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .body {
+      padding: 18px 22px 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font: inherit;
+      color: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fafcff;
+      display: grid;
+      gap: 10px;
+    }
+
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 130px auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .path-text {
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-word;
+      padding-top: 2px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      color: inherit;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .output {
+      width: 100%;
+      min-height: 360px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 920px) {
+      .grid,
+      .fact-grid,
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="panel">
+      <div class="head">
+        <h1>Family Person Builder</h1>
+        <p>Create a new person page and media folder directly in this project. This runs locally on your machine, not on GitHub Pages.</p>
+      </div>
+      <div class="body">
+        <div class="grid">
+          <div class="field">
+            <label for="page-title">Person Name</label>
+            <input id="page-title" type="text" placeholder="Rivka (Regina) Davidowitz nee Herskovics">
+          </div>
+          <div class="field">
+            <label for="file-name">Output File Name</label>
+            <input id="file-name" type="text" placeholder="rivkaReginaDavidowitzNeeHerskovics.html">
+          </div>
+          <div class="field">
+            <label for="home-link">Home Link</label>
+            <select id="home-link">
+              <option value="./newTree.html">Herskowitz Tree</option>
+              <option value="./newDavidowitzTree.html">Davidowitz Tree</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="folder-name">Image Folder Name</label>
+            <input id="folder-name" type="text" placeholder="rivkahDavidowitz">
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="add-fact" class="primary" type="button">Add Fact Row</button>
+          <button id="add-media" type="button">Add Media Row</button>
+          <button id="fill-sample" type="button">Fill Sample</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="head">
+        <h2>Facts</h2>
+        <p>Free text only. Add as many rows as you want.</p>
+      </div>
+      <div class="body">
+        <div id="fact-list" class="list"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="head">
+        <h2>Media</h2>
+        <p>Pick local images or PDFs. The app will create `img/&lt;folder&gt;/` and copy them there for you.</p>
+      </div>
+      <div class="body">
+        <div id="media-list" class="list"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="head">
+        <h2>Create</h2>
+        <p>Click create to write the HTML file and copy media files into the new image folder.</p>
+      </div>
+      <div class="body">
+        <div class="row">
+          <button id="create-page" class="primary" type="button">Create Page and Folder</button>
+          <button id="copy-html" type="button">Copy Generated HTML</button>
+        </div>
+        <div id="status" class="status"></div>
+        <textarea id="output" class="output" spellcheck="false"></textarea>
+      </div>
+    </section>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>

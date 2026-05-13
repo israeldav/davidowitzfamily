@@ -1,0 +1,13 @@
+{
+  "name": "davidowitzfamily-person-builder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Electron app for creating family person pages and media folders.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^31.7.7"
+  }
+}
