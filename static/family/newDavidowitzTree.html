@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Davidowitz Family Tree</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.css">
+  <script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/treant-js@1.0.0/Treant.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    h2 {
+      text-align: center;
+      margin: 10px 0;
+    }
+    #tree-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 10px;
+    }
+    #tree {
+      width: 95%;
+      height: 2600px;
+      position: relative;
+    }
+    .node {
+      padding: 5px 10px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .linked {
+      border: 2px solid #66ccff !important;
+    }
+    .Treant > .node {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+<h2>Davidowitz Family Tree</h2>
+<div id="tree-container"><div id="tree"></div></div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const config = {
+      chart: {
+        container: "#tree",
+        node: { HTMLclass: "node" },
+        connectors: { type: "step" }
+      },
+      nodeStructure: {
+
+
+
+  innerHTML: 'New Root',
+  children: [
+    {
+
+
+        innerHTML: 'Moshe Moscovics',
+
+
+        children: [
+          {
+            innerHTML: '<a href="./mechelDavidowitz.html" target="_blank">Mechel</a> & <a href="./tziporaDavidowitz.html" target="_blank">Tziporah </a>(Moskovics)',
+            children: [
+              { innerHTML: '<a href="./shlomoDavidowitz.html" target="_blank">Shlomo</a> 🪦',
+
+ children: [
+                  { innerHTML: 'Menyhert' }
+                ]
+
+
+               },
+              {
+                innerHTML: '<a href="./avrohamDavidowitz.html" target="_blank">Avroham</a>',
+                children: [
+                  { innerHTML: 'Tziporah' },
+                  { innerHTML: 'Micha' }
+                ]
+              },
+              {
+                innerHTML: '<a href="./peppiDavidowitz.html" target="_blank">Pesil</a>',
+                children: [
+                  { innerHTML: 'Shmuel' },
+                  { innerHTML: 'Isaac' },
+                  { innerHTML: 'Tziporah' },
+                  { innerHTML: 'Chana Feiga' },
+                  { innerHTML: 'Golda' },
+                  { innerHTML: 'Michael' }
+                ]
+              },
+              { innerHTML: '<a href="./szerenaDavidowitz.html" target="_blank">Szerena (Sarah)</a>' },
+              { innerHTML: '<a href="./isaacDavidowitzBenMechel.html" target="_blank">Isaac</a>' },
+               { innerHTML: '<a href="./estherDavidowitz.html" target="_blank">Esther</a>' },
+               { innerHTML: '<a href="./suriDavidowitzBasMechel.html" target="_blank">Suri</a>' },
+              {
+                innerHTML: '<a href="./etelDavidowitz.html" target="_blank">Etel</a> 🪦',
+                children: [
+                  { innerHTML: 'Mechel' },
+                  { innerHTML: 'Isaac' },
+                  { innerHTML: 'Shmuel' },
+                  { innerHTML: 'Avroham Yehuda' }
+                ]
+              },
+              {
+                innerHTML: '<a href="./moshe.html" target="_blank">Moshe</a> & <a href="./rivkahDavidowitz.html" target="_blank">Rivkah (Regina)</a>',
+                HTMLclass: "linked",
+                children: [
+                  { innerHTML: '<a href="./srulDavidowitz.html" target="_blank">Srul</a>' },
+                  { innerHTML: '<a href="./danielDavidowitz.html" target="_blank">Daniel </a>' },
+                  { innerHTML: '<a href="./shmuelDavidowitz.html" target="_blank">Shmuel </a> & <a href="./leahFarkas.html" target="_blank">Leah (nee Farkas)</a>',
+                 children: [
+                      { innerHTML: '<a href="./henrikDavidowitz2.html" target="_blank">Henrik</a>'},
+                      { innerHTML: '<a href="./paulaDavidowitz.html" target="_blank">Paula</a>'},
+                      
+                    ]
+                   },
+                  { innerHTML: '<a href="./zaidy.html" target="_blank">Irving</a>',
+                     children: [
+                      { innerHTML: '<a href="./fredDavidowitz.html" target="_blank">Fred 🇺🇸</a>'},
+                      { innerHTML: '<a href="./morrisDavidowitz.html" target="_blank">Morris 🇺🇸</a>'},
+                      { innerHTML: "Tzvi 🇺🇸" }
+                    ]
+                   }
+                ]
+              },
+              {
+                innerHTML: 'Moshe & <a href="./miriamDavidowitz.html" target="_blank">Miriam</a>',
+                children: [
+                  { innerHTML: '<a href="./itzikDavidowitz.html" target="_blank">Irving</a>' },
+                  { innerHTML: '<a href="./ceilDavidowitz.html" target="_blank">Ceil</a>' },
+                  { innerHTML: '<a href="./mitchDavidowitz.html" target="_blank">Mitch</a>' }
+                ]
+              },
+              {
+                innerHTML: '<a href="./miriamDavidowitz.html" target="_blank">Miriam</a> & Chaim Farkas',
+                children: [
+                  { innerHTML: '<a href="./etelFarkas.html" target="_blank">Esther/Etel</a>' },
+                  { innerHTML: 'Jacob'},
+                  { innerHTML: 'Marton'},
+                  { innerHTML: '<a href="./leahFarkas.html" target="_blank">Leah</a>' },
+                  { innerHTML: 'Berta'},
+                  { innerHTML: 'Henrik'},
+                  { innerHTML: 'Eizik'},
+                ]
+              }
+            ]
+          },
+          {
+            innerHTML: 'x & x',
+            children: [
+              {
+                innerHTML: 'Leib (Leba) Herskovics',
+                children: [
+                  {
+                    innerHTML: '<a href="./rivkahDavidowitz.html" target="_blank">Rivkah (Regina)</a><br><small>duplicate</small>',
+                    HTMLclass: "linked"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            innerHTML: 'Shmuel Klein & Malke	(nee Herschkovics)',
+            children: [
+              {
+                innerHTML: '<a href="./poliKlein.html" target="_blank">Poli (Toli) nee Klein</a> & Leib Herskovics',
+                children: [
+                  {
+                    innerHTML: '<a href="./rivkahDavidowitz.html" target="_blank">Rivkah (Regina)</a><br><small>duplicate</small>',
+                    HTMLclass: "linked"
+                  },
+                     {
+                    innerHTML: '<a href="./eizikHerskovics2.html" target="_blank">Eizik</a><br>',
+                    HTMLclass: "linked"
+                    
+                  }, 
+                     {
+                    innerHTML: '<a href="./malvinHerskovics.html" target="_blank">Malvin</a><br>',
+                    HTMLclass: "linked"
+                    
+                  },
+                  {
+                    innerHTML: '<a href="./benjaminHerskovics.html" target="_blank">Benjamin</a><br>',
+                    HTMLclass: "linked"
+                    
+                  },
+                   {
+                    innerHTML: "Eszter Herskovics",
+                    
+                  },
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    
+  ]
+    }    
+};
+
+    new Treant(config);
+  });
+</script>
+</body>
+</html>

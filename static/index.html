@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Yahrzeit Reminder</title>
+    <link rel="icon" href="/candle.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main id="listPage" class="shell">
+      <section class="masthead">
+        <div class="brand">
+          <img class="brand-mark" src="/candle.svg" alt="" aria-hidden="true">
+          <h1>Yahrzeit Reminder</h1>
+        </div>
+        <div class="actions">
+          <button id="viewEmailsButton" type="button" title="View emails">
+            <span>View Emails</span>
+          </button>
+          <button id="addEmailButton" type="button" title="Add email">
+            <span aria-hidden="true">+</span>
+            <span>Add Email</span>
+          </button>
+          <button id="addFamilyButton" type="button" title="Add family">
+            <span aria-hidden="true">+</span>
+            <span>Add Family</span>
+          </button>
+          <button id="addButton" class="primary" type="button" title="Add yahrzeit">
+            <span aria-hidden="true">+</span>
+            <span>Add</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="status-row" aria-live="polite">
+        <div id="message" class="message"></div>
+      </section>
+
+      <section class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Family</th>
+              <th>Secular Date</th>
+              <th>Hebrew Date</th>
+              <th>Burial</th>
+              <th>Notes</th>
+              <th>
+                <div class="filter-menu">
+                  <button id="filterButton" class="filter-icon" type="button" title="Filter families" aria-label="Filter families">
+                    <svg aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="M4 6h16l-6 7v5l-4 2v-7z"></path>
+                    </svg>
+                  </button>
+                  <label id="familyFilterLabel" class="family-filter" hidden>
+                    <span>Family</span>
+                    <select id="familyFilterSelect">
+                      <option value="">All families</option>
+                    </select>
+                  </label>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="reminderRows"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <main id="personPage" class="shell person-page" hidden>
+      <section class="person-header">
+        <div>
+          <a class="back-link" href="/">Home</a>
+          <h1 id="personTitle">Yahrzeit</h1>
+          <p id="personSubtitle" class="person-subtitle"></p>
+        </div>
+        <div class="actions">
+          <button id="personEditButton" type="button">Edit</button>
+          <button id="personDeleteButton" class="danger" type="button">Delete</button>
+          <button id="personCancelEditButton" type="button" hidden>Cancel</button>
+          <button id="personSaveButton" class="primary" type="button" hidden>Save</button>
+        </div>
+      </section>
+
+      <section id="personMessage" class="message" aria-live="polite"></section>
+
+      <section id="personDetail" class="person-section detail-view"></section>
+
+      <form id="personForm" class="form-grid person-edit-form" autocomplete="off" hidden>
+        <label>
+          <span>Hebrew Name</span>
+          <input name="hebrewName" autocomplete="new-password" spellcheck="false">
+        </label>
+        <label>
+          <span>Secular Name</span>
+          <input name="secularName" autocomplete="new-password" spellcheck="false">
+        </label>
+        <label>
+          <span>Father's Name</span>
+          <input name="fatherName" autocomplete="new-password" spellcheck="false">
+        </label>
+        <label>
+          <span>Family</span>
+          <select name="familyId" id="personFamilySelect">
+            <option value=""></option>
+          </select>
+        </label>
+        <label>
+          <span>Secular Date</span>
+          <input name="reminderDate" type="date">
+        </label>
+        <fieldset class="hebrew-date wide">
+          <legend>Hebrew Date</legend>
+          <label>
+            <span>Day</span>
+            <input name="hebrewDay" type="number" min="1" max="30" inputmode="numeric">
+          </label>
+          <label>
+            <span>Month</span>
+            <select name="hebrewMonth">
+              <option value=""></option>
+              <option>Nisan</option>
+              <option>Iyyar</option>
+              <option>Sivan</option>
+              <option>Tamuz</option>
+              <option>Av</option>
+              <option>Elul</option>
+              <option>Tishrei</option>
+              <option>Cheshvan</option>
+              <option>Kislev</option>
+              <option>Tevet</option>
+              <option>Sh'vat</option>
+              <option>Adar</option>
+              <option>Adar I</option>
+              <option>Adar II</option>
+            </select>
+          </label>
+          <label>
+            <span>Year</span>
+            <select name="hebrewYear" id="personHebrewYearSelect"></select>
+          </label>
+        </fieldset>
+        <label class="wide">
+          <span>Notes</span>
+          <textarea name="notes" rows="4"></textarea>
+        </label>
+        <label>
+          <span>Burial</span>
+          <input name="burialLocation" autocomplete="new-password" spellcheck="false">
+        </label>
+        <label>
+          <span>Burial Link</span>
+          <input name="burialLink" type="url" autocomplete="new-password" spellcheck="false">
+        </label>
+      </form>
+
+      <section class="person-section">
+        <div class="section-header">
+          <h2>Other Information</h2>
+          <div>
+            <button id="addAttachmentButton" type="button">Add File</button>
+            <input id="attachmentInput" type="file" accept="image/*,application/pdf" hidden>
+          </div>
+        </div>
+        <div id="attachmentList" class="attachments"></div>
+      </section>
+    </main>
+
+    <div id="attachmentPreviewOverlay" class="modal-overlay" hidden>
+      <section class="modal attachment-modal" role="dialog" aria-modal="true" aria-labelledby="attachmentPreviewTitle">
+        <header class="modal-header">
+          <h2 id="attachmentPreviewTitle">File</h2>
+          <button id="closeAttachmentPreviewButton" class="icon neutral" type="button" title="Close">x</button>
+        </header>
+        <div id="attachmentPreviewBody" class="attachment-preview-body"></div>
+      </section>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <header class="modal-header">
+          <h2 id="modalTitle">Add Yahrzeit</h2>
+          <div class="modal-header-actions">
+            <button id="editReminderButton" class="icon neutral" type="button" title="Edit" hidden>Edit</button>
+            <button id="closeModalButton" class="icon neutral" type="button" title="Close">x</button>
+          </div>
+        </header>
+
+        <section id="reminderDetail" class="detail-view" hidden></section>
+
+        <form id="reminderForm" class="form-grid" autocomplete="off">
+          <label>
+            <span>Hebrew Name</span>
+            <input name="hebrewName" autocomplete="new-password" spellcheck="false">
+          </label>
+          <label>
+            <span>Secular Name</span>
+            <input name="secularName" autocomplete="new-password" spellcheck="false">
+          </label>
+          <label>
+            <span>Father's Name</span>
+            <input name="fatherName" autocomplete="new-password" spellcheck="false">
+          </label>
+          <label>
+            <span>Family</span>
+            <select name="familyId" id="familySelect">
+              <option value=""></option>
+            </select>
+          </label>
+          <label>
+            <span>Secular Date</span>
+            <input name="reminderDate" type="date">
+          </label>
+          <fieldset class="hebrew-date wide">
+            <legend>
+              <span>Hebrew Date</span>
+              <span id="dateConversionStatus" class="inline-status"></span>
+            </legend>
+            <label>
+              <span>Day</span>
+              <input name="hebrewDay" type="number" min="1" max="30" inputmode="numeric">
+            </label>
+            <label>
+              <span>Month</span>
+              <select name="hebrewMonth">
+                <option value=""></option>
+                <option>Nisan</option>
+                <option>Iyyar</option>
+                <option>Sivan</option>
+                <option>Tamuz</option>
+                <option>Av</option>
+                <option>Elul</option>
+                <option>Tishrei</option>
+                <option>Cheshvan</option>
+                <option>Kislev</option>
+                <option>Tevet</option>
+                <option>Sh'vat</option>
+                <option>Adar</option>
+                <option>Adar I</option>
+                <option>Adar II</option>
+              </select>
+            </label>
+            <label>
+              <span>Year</span>
+              <select name="hebrewYear"></select>
+            </label>
+          </fieldset>
+          <label class="wide">
+            <span>Notes</span>
+            <textarea name="notes" rows="3"></textarea>
+          </label>
+          <label class="wide">
+            <span>Burial</span>
+            <input name="burialLocation" autocomplete="new-password" spellcheck="false">
+          </label>
+          <label class="wide">
+            <span>Burial Link</span>
+            <input name="burialLink" type="url" autocomplete="new-password" spellcheck="false">
+          </label>
+          <div class="form-actions wide">
+            <button id="cancelButton" type="button">Cancel</button>
+            <button id="saveReminderButton" class="primary" type="submit">Save reminder</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="familyModalOverlay" class="modal-overlay" hidden>
+      <section class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="familyModalTitle">
+        <header class="modal-header">
+          <h2 id="familyModalTitle">Add Family</h2>
+          <button id="closeFamilyModalButton" class="icon neutral" type="button" title="Close">x</button>
+        </header>
+
+        <form id="familyForm" class="form-grid one-column" autocomplete="off">
+          <label>
+            <span>Family</span>
+            <input name="name" autocomplete="new-password" spellcheck="false" required>
+          </label>
+          <div class="form-actions wide">
+            <button id="cancelFamilyButton" type="button">Cancel</button>
+            <button class="primary" type="submit">Save family</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="emailModalOverlay" class="modal-overlay" hidden>
+      <section class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle">
+        <header class="modal-header">
+          <h2 id="emailModalTitle">Add Email</h2>
+          <button id="closeEmailModalButton" class="icon neutral" type="button" title="Close">x</button>
+        </header>
+
+        <form id="emailForm" class="form-grid one-column" autocomplete="off">
+          <label>
+            <span>Email Address</span>
+            <input name="email" type="email" autocomplete="new-password" spellcheck="false" required>
+          </label>
+          <label>
+            <span>Family</span>
+            <select name="familyId" id="emailFamilySelect">
+              <option value=""></option>
+            </select>
+          </label>
+          <label>
+            <span>Names</span>
+            <select name="reminderIds" id="emailReminderSelect" multiple size="8"></select>
+            <small class="hint">Leave names blank to receive every matching yahrzeit.</small>
+          </label>
+          <div class="form-actions wide">
+            <button id="cancelEmailButton" type="button">Cancel</button>
+            <button id="saveEmailButton" class="primary" type="submit">Save email</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="emailListModalOverlay" class="modal-overlay" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="emailListModalTitle">
+        <header class="modal-header">
+          <h2 id="emailListModalTitle">Emails</h2>
+          <button id="closeEmailListModalButton" class="icon neutral" type="button" title="Close">x</button>
+        </header>
+
+        <div class="table-shell compact-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Family</th>
+                <th>Names</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="emailRecipientRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

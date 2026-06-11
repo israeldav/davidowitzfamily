@@ -1,0 +1,20 @@
+name: Daily Yahrzeit Reminders
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call reminder job
+        run: |
+          curl -fsS -X POST "$APP_BASE_URL/api/jobs/send-reminders" \
+            -H "Authorization: Bearer $REMINDER_JOB_TOKEN" \
+            -H "Content-Type: application/json"
+        env:
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          REMINDER_JOB_TOKEN: ${{ secrets.REMINDER_JOB_TOKEN }}
+

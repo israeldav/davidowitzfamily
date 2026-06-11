@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Yahrzeit candle">
+  <rect width="64" height="64" rx="14" fill="#f8faf9"/>
+  <path d="M26 25h12l-2 26h-8z" fill="#ffffff" stroke="#256f5d" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M27 48h10" stroke="#1d594b" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 8c5 6 8 10 8 15a8 8 0 0 1-16 0c0-5 3-9 8-15z" fill="#d49b28"/>
+  <path d="M32 14c2 3 4 6 4 9a4 4 0 0 1-8 0c0-3 2-6 4-9z" fill="#fff0b8"/>
+</svg>

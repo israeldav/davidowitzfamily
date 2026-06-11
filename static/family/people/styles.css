@@ -1,0 +1,83 @@
+body {
+  background-color: #ededed;
+  padding: 30px;
+  font-family: 'Oxygen', sans-serif;
+  font-size: 18px;
+}
+ul {
+  background-color: #ededed;
+  padding: 30px;
+  font-family: 'Oxygen', sans-serif;
+  margin-bottom: 3px;
+  font-size: 18;
+  line-height: 180%;
+}
+h1 {
+  color: #333333;
+  text-align: center;
+  align-items: center;
+  font-style: Verdana;
+}
+p {
+  color: #333333;
+}
+
+ol li {
+  list-style-type: none;
+}
+
+.customIndent {
+  padding-left: 85px;
+}
+img {
+  width: 45%;
+  height: auto;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.hii {
+  border-radius: 10px;
+  border-color: aqua;
+  padding: 30px;
+  width: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+}
+#buttons {
+  background-color: white;
+  outline-color: rgb(26, 115, 232);
+  border-bottom-color: rgb(26, 115, 232);
+  border-top-color: rgb(26, 115, 232);
+  border-right-color: rgb(26, 115, 232);
+  border-left-color: rgb(26, 115, 232);
+  text-decoration-color: rgb(26, 115, 232);
+  text-decoration-style: solid;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-width: 1px;
+  color: rgb(26, 115, 232);
+  border-style: solid;
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  font-family: 'Oxygen', sans-serif;
+}
+
+#link {
+  color: rgb(26, 115, 232);
+  text-decoration: none;
+}
